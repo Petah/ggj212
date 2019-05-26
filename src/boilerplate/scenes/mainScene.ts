@@ -7,6 +7,7 @@ export class MainScene extends Phaser.Scene {
     public backgroundLayer: any;
     public entities: Entity[] = [];
     public tileset: Phaser.Tilemaps.Tileset;
+    lightMap: Phaser.Tilemaps.Tilemap;
 
     constructor() {
         super({
@@ -25,7 +26,6 @@ export class MainScene extends Phaser.Scene {
         this.map = this.add.tilemap("Tile Layer 1");
         this.tileset = this.map.addTilesetImage("test", "tiles");
         this.backgroundLayer = this.map.createDynamicLayer("Tile Layer 1", this.tileset, 0, 0);
-console.log(this.backgroundLayer);
         // console.log(this.backgroundLayer.layer.data[0][0]);
         // this.input.on("pointermove", () => {
         //     console.log(arguments);

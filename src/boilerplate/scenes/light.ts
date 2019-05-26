@@ -12,7 +12,9 @@ export default class Light implements Entity {
         const x = this.scene.input.activePointer.worldX;
         const y = this.scene.input.activePointer.worldY;
         this.sprite.setPosition(x, y);
+        // if (this.scene.input.activePointer.isDown) {
         this.updateTiles(Math.floor(x / 16), Math.floor(y / 16));
+        // }
         // console.log(x / 16, y / 16);
         // const tx = Math.floor(x / 16);
         // const ty = Math.floor(y / 16);
@@ -40,19 +42,22 @@ export default class Light implements Entity {
         if (y < 0 || y >= this.scene.backgroundLayer.layer.height) {
             return null;
         }
-        return this.scene.backgroundLayer.layer.data[y][x];
+        return {
+            background: this.scene.map.layers[0].data[y][x],
+            light: this.scene.map.layers[1].data[y][x],
+        };
     }
 
     private updateTiles(mouseX, mouseY) {
         for (let x = 0; x < this.scene.backgroundLayer.layer.width; x++) {
             for (let y = 0; y < this.scene.backgroundLayer.layer.height; y++) {
-                const tile = this.getTile(x, y);
-                if (tile) {
+                const { background, light } = this.getTile(x, y);
+                if (background) {
                     const distance = GM.pointDistance(mouseX, mouseY, x, y);
                     if (distance < this.range && !this.isBlocked(mouseX, mouseY, x, y)) {
-                        tile.alpha = Math.max(0, 1 - distance / this.range);
+                        background.alpha = Math.max(0, 1 - distance / this.range);
                     } else {
-                        tile.alpha = 0;
+                        background.alpha = 0;
                     }
                 }
             }
@@ -66,20 +71,20 @@ export default class Light implements Entity {
         let distance = null;
         let blocked = false;
         do {
-            const tile = this.getTile(cx, cy);
-            if (!tile) {
+            const { background, light } = this.getTile(cx, cy);
+            if (!light) {
                 return true;
             }
-            const isFloor = tile.index == 81;
+            if (blocked) {
+                return true;
+            }
+            const isFloor = light.index === -1;
             if (!isFloor) {
                 blocked = true;
             }
-            if (isFloor && blocked) {
-                return true;
-            }
             distance = GM.pointDistance(cx, cy, x2, y2);
-            cx += GM.lengthDirX(0.3, direction);
-            cy += GM.lengthDirY(0.3, direction);
+            cx += GM.lengthDirX(0.5, direction);
+            cy += GM.lengthDirY(0.5, direction);
         } while (distance > 0.5);
         return false;
     }
