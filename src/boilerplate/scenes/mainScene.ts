@@ -1,4 +1,4 @@
-export class MainScene extends Phaser.Scene {
+export class MainScene extends Phaser.Scene implements Scene {
     private phaserSprite: Phaser.GameObjects.Sprite;
 
     map: Phaser.Tilemaps.Tilemap;

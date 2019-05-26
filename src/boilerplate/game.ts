@@ -1,23 +1,22 @@
 import "phaser";
-import { MainScene } from "./scenes/mainScene";
-
-// main game configuration
-const config: GameConfig = {
-    width: 1200,
-    height: 800,
-    type: Phaser.AUTO,
-    parent: "game",
-    scene: MainScene,
-    physics: {
-        default: "arcade",
-        arcade: {
-            gravity: { y: 200 }
-        }
-    }
-};
+import { scenes } from "./scenes/scenes";
 
 // game class
 export class Game extends Phaser.Game {
+    private defaultConfig: GameConfig = {
+        width: 1200,
+        height: 800,
+        type: Phaser.AUTO,
+        parent: "game",
+        scene: scenes,
+        physics: {
+            default: "arcade",
+            arcade: {
+                gravity: { y: 200 }
+            }
+        }
+    };
+
     constructor(config: GameConfig) {
         super(config);
     }
