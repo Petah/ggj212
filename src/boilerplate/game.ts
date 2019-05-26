@@ -5,7 +5,7 @@ import { MainScene } from "./scenes/mainScene";
 const config: GameConfig = {
     width: 1200,
     height: 800,
-    type: Phaser.AUTO,
+    type: Phaser.WEBGL,
     parent: "game",
     scene: MainScene,
     physics: {
@@ -13,7 +13,10 @@ const config: GameConfig = {
         arcade: {
             gravity: { y: 200 }
         }
-    }
+    },
+    input: {
+        mouse: true,
+    },
 };
 
 // game class
