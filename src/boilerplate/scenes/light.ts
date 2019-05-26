@@ -48,10 +48,11 @@ export default class Light implements Entity {
             for (let y = 0; y < this.scene.backgroundLayer.layer.height; y++) {
                 const tile = this.getTile(x, y);
                 if (tile) {
-                    if (GM.pointDistance(mouseX, mouseY, x, y) < this.range && !this.isBlocked(mouseX, mouseY, x, y)) {
-                        tile.alpha = 1;
+                    const distance = GM.pointDistance(mouseX, mouseY, x, y);
+                    if (distance < this.range && !this.isBlocked(mouseX, mouseY, x, y)) {
+                        tile.alpha = Math.max(0, 1 - distance / this.range);
                     } else {
-                        tile.alpha = 0.6;
+                        tile.alpha = 0;
                     }
                 }
             }
