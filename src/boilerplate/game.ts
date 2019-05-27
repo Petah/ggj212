@@ -2,9 +2,9 @@ import "phaser";
 import { scenes } from "./scenes/scenes";
 
 // main game configuration
-const config: GameConfig = {
-    width: 1200,
-    height: 800,
+const config: Phaser.Types.Core.GameConfig = {
+    width: window.innerWidth,
+    height: window.innerHeight,
     type: Phaser.WEBGL,
     parent: "game",
     scene: scenes,
@@ -21,7 +21,7 @@ const config: GameConfig = {
 
 // game class
 export class Game extends Phaser.Game {
-    constructor(config: GameConfig) {
+    constructor(config: Phaser.Types.Core.GameConfig) {
         super(config);
     }
 }
@@ -30,3 +30,4 @@ export class Game extends Phaser.Game {
 window.addEventListener("load", () => {
     const game = new Game(config);
 });
+

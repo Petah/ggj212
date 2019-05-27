@@ -3,45 +3,48 @@ import Vector from "../../services/math/vector";
 import Path from "../../services/path";
 
 export default class Light extends Drawable {
-    range = 20;
+    private range = 20;
+    private step = 0.5;
 
     preload(): void {
         this.scene.load.image('light', Path.asset('lamp.png'));
     }
 
-    update(): void {
+    public create(params) {
+        params.scene.ui.$refs.rightSidebar.addWidget({
+            id: 'light',
+            type: 'widget-light',
+            range: this.range,
+            step: this.step,
+        });
+    }
+
+    public update(): void {
         const x = this.scene.input.activePointer.worldX;
         const y = this.scene.input.activePointer.worldY;
         this.sprite.setPosition(x, y);
-        // if (this.scene.input.activePointer.isDown) {
         this.updateTiles(Math.floor(x / 16), Math.floor(y / 16));
-        // }
-        // console.log(x / 16, y / 16);
-        // const tx = Math.floor(x / 16);
-        // const ty = Math.floor(y / 16);
-        // for (let txx = tx - 10; txx < tx + 10; txx++) {
-        //     if (txx < 0 || txx >= 100) {
-        //         continue;
-        //     }
-        //     for (let tyy = ty - 10; tyy < ty + 10; tyy++) {
-        //         if (tyy < 0 || tyy >= 100) {
-        //             continue;
-        //         }
-        //         this.scene.backgroundLayer.layer.data[tyy][txx].alpha = 0.9;
-        //     }
-        // }
 
-        // console.log(this.scene.input.activePointer.worldX, this.scene.input.activePointer.worldY);
+        this.scene.ui.$refs.rightSidebar.$refs.light[0].x = x;
+        this.scene.ui.$refs.rightSidebar.$refs.light[0].y = y;
+        this.range = this.scene.ui.$refs.rightSidebar.$refs.light[0].range;
+        this.step = this.scene.ui.$refs.rightSidebar.$refs.light[0].step;
     }
 
     private getTile(x, y) {
         x = Math.round(x);
         y = Math.round(y);
         if (x < 0 || x >= this.scene.backgroundLayer.layer.width) {
-            return null;
+            return {
+                background: null,
+                light: null,
+            };
         }
         if (y < 0 || y >= this.scene.backgroundLayer.layer.height) {
-            return null;
+            return {
+                background: null,
+                light: null,
+            };
         }
         return {
             background: this.scene.map.layers[0].data[y][x],
@@ -73,7 +76,7 @@ export default class Light extends Drawable {
         let blocked = false;
         do {
             const { background, light } = this.getTile(cx, cy);
-            if (!light) {
+            if (!background || !light) {
                 return true;
             }
             if (blocked) {
@@ -84,9 +87,9 @@ export default class Light extends Drawable {
                 blocked = true;
             }
             distance = Vector.pointDistance(cx, cy, x2, y2);
-            cx += Vector.lengthDirX(0.5, direction);
-            cy += Vector.lengthDirY(0.5, direction);
-        } while (distance > 0.5);
+            cx += Vector.lengthDirX(this.step, direction);
+            cy += Vector.lengthDirY(this.step, direction);
+        } while (distance > this.step);
         return false;
     }
 }
