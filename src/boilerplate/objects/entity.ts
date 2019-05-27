@@ -1,5 +1,5 @@
-import { default as EntityInterface } from "./entity.interface";
-import Scene from "./scene";
+import EntityInterface from "./entity.interface";
+import Scene from "../scenes/scene";
 
 abstract class Entity extends Phaser.GameObjects.GameObject implements EntityInterface {
     protected scene: Scene;

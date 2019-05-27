@@ -1,4 +1,4 @@
-export default interface Entity {
+export default interface EntityInterface {
     create(params: any): void;
 
     update(): void;

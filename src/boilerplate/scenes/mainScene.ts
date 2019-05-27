@@ -1,14 +1,14 @@
-import Entity from "../objects/entity.interface";
-import Scene from "../objects/scene";
-import Light from "../objects/lighting/light";
+import EntityInterface from "../objects/entity.interface";
 import Path from "../services/path";
+import Scene from "./scene";
+import Light from "../objects/lighting/light";
 
 export class MainScene extends Scene {
     public map: Phaser.Tilemaps.Tilemap;
     public backgroundLayer: any;
-    public entities: Entity[] = [];
+    public entities: EntityInterface[] = [];
     public tileset: Phaser.Tilemaps.Tileset;
-    lightMap: Phaser.Tilemaps.Tilemap;
+    public lightMap: Phaser.Tilemaps.Tilemap;
 
     constructor() {
         super({

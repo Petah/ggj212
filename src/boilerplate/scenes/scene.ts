@@ -1,5 +1,5 @@
-import Entity from "./entity.interface";
-import { default as SceneInterface } from "./scene.interface";
+import Entity from "../objects/entity.interface";
+import SceneInterface from "./scene.interface";
 
 abstract class Scene extends Phaser.Scene implements SceneInterface {
     entities: Entity[];
