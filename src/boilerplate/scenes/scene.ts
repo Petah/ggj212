@@ -1,7 +1,6 @@
 import Entity from "../objects/entity.interface";
-import SceneInterface from "./scene.interface";
 
-abstract class Scene extends Phaser.Scene implements SceneInterface {
+abstract class Scene extends Phaser.Scene {
     entities: Entity[];
     map: Phaser.Tilemaps.Tilemap;
     backgroundLayer: any;
