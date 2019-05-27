@@ -1,40 +1,20 @@
-export abstract class Actor extends Phaser.GameObjects.GameObject {
-    protected game: Phaser.Game;
+import Drawable from "../drawable";
+
+export abstract class Actor extends Drawable {
+    activeActor: boolean = false;
 
     // Stats
-    protected health: number;
-    protected velocity: number;
-    protected class: string;
-
-    // Sprites
-    protected sprite: Phaser.GameObjects.Sprite;
+    health: number;
+    velocity: number;
+    class: string;
 
     // Input
-    protected cursors: Phaser.Input.Keyboard.CursorKeys;
-
-    constructor(params) {
-        super(params.scene, params.type);
-
-        this.game = params.game;
-        this.create(params);
-    }
-
-    public preload(): void {
-
-    }
+    cursors: Phaser.Input.Keyboard.CursorKeys;
 
     public create(params): void {
         this.health = params.health || 100;
         this.velocity = params.velocity || 0;
         this.class = params.class || "human";
-
-        this.sprite = this.game.physics.add(
-            params.originX,
-            params.originY,
-            params.spriteName,
-        );
-        this.sprite.setDepth(params.depth || 0);
-
         this.cursors = this.scene.input.keyboard.createCursorKeys();
     }
 
@@ -45,7 +25,10 @@ export abstract class Actor extends Phaser.GameObjects.GameObject {
             return;
         }
 
-        this.handleInput();
+        // Only handle inputs for active players
+        if (this.activeActor) {
+            this.handleInput();
+        }
     }
 
     private handleInput() {

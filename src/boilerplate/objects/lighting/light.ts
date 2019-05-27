@@ -1,13 +1,14 @@
-import Entity from "./entity";
-import { MainScene } from "./mainScene";
-import GM from "./gm";
+import Drawable from "../drawable";
+import Vector from "../../services/math/vector";
+import Path from "../../services/path";
 
-export default class Light implements Entity {
-    sprite: Phaser.GameObjects.Sprite;
+export default class Light extends Drawable {
     range = 20;
-    constructor(private scene: MainScene) {
-        this.sprite = this.scene.add.sprite(100, 100, 'light');
+
+    preload(): void {
+        this.scene.load.image('light', Path.asset('lamp.png'));
     }
+
     update(): void {
         const x = this.scene.input.activePointer.worldX;
         const y = this.scene.input.activePointer.worldY;
@@ -53,7 +54,7 @@ export default class Light implements Entity {
             for (let y = 0; y < this.scene.backgroundLayer.layer.height; y++) {
                 const { background, light } = this.getTile(x, y);
                 if (background) {
-                    const distance = GM.pointDistance(mouseX, mouseY, x, y);
+                    const distance = Vector.pointDistance(mouseX, mouseY, x, y);
                     if (distance < this.range && !this.isBlocked(mouseX, mouseY, x, y)) {
                         background.alpha = Math.max(0, 1 - distance / this.range);
                     } else {
@@ -65,7 +66,7 @@ export default class Light implements Entity {
     }
 
     private isBlocked(x1, y1, x2, y2): boolean {
-        const direction = GM.pointDirection(x1, y1, x2, y2);
+        const direction = Vector.pointDirection(x1, y1, x2, y2);
         let cx = x1;
         let cy = y1;
         let distance = null;
@@ -82,11 +83,10 @@ export default class Light implements Entity {
             if (!isFloor) {
                 blocked = true;
             }
-            distance = GM.pointDistance(cx, cy, x2, y2);
-            cx += GM.lengthDirX(0.5, direction);
-            cy += GM.lengthDirY(0.5, direction);
+            distance = Vector.pointDistance(cx, cy, x2, y2);
+            cx += Vector.lengthDirX(0.5, direction);
+            cy += Vector.lengthDirY(0.5, direction);
         } while (distance > 0.5);
         return false;
     }
-
 }

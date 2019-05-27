@@ -1,8 +1,9 @@
-import Entity from "./entity";
-import Light from "./light";
+import Entity from "../objects/entity.interface";
+import Scene from "../objects/scene";
+import Light from "../objects/lighting/light";
+import Path from "../services/path";
 
-export class MainScene extends Phaser.Scene {
-
+export class MainScene extends Scene {
     public map: Phaser.Tilemaps.Tilemap;
     public backgroundLayer: any;
     public entities: Entity[] = [];
@@ -19,7 +20,7 @@ export class MainScene extends Phaser.Scene {
     public preload(): void {
         this.load.image("tiles", "./src/boilerplate/assets/Tileset_Large.png");
         this.load.tilemapTiledJSON("Tile Layer 1", "./src/boilerplate/tilemaps/test.json");
-        this.load.image('light', './src/boilerplate/assets/player.png');
+        this.load.image('light', Path.asset('player.png'));
     }
 
     public create(): void {
@@ -34,7 +35,7 @@ export class MainScene extends Phaser.Scene {
         // const layer = map.createBlankDynamicLayer('Layer 1', this.tileset);
         // layer.fill(20);
 
-        this.entities.push(new Light(this));
+        this.entities.push(new Light({ scene: this }));
     }
 
     public update(): void {
