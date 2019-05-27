@@ -1,16 +1,23 @@
-import Drawable from "../drawable";
+import Entity from "../entity";
 import Vector from "../../services/math/vector";
 import Path from "../../services/path";
 
-export default class Light extends Drawable {
+export default class Light extends Entity {
     private range = 20;
     private step = 0.5;
+    private sprite: Phaser.GameObjects.Sprite;
 
     preload(): void {
         this.scene.load.image('light', Path.asset('lamp.png'));
     }
 
     public create(params) {
+        this.sprite = this.scene.add.sprite(
+            this.scene.input.activePointer.worldX,
+            this.scene.input.activePointer.worldY,
+            'light'
+        );
+
         params.scene.ui.$refs.rightSidebar.addWidget({
             id: 'light',
             type: 'widget-light',

@@ -1,6 +1,6 @@
-import { MainScene } from "./mainScene";
+import { MainScene } from "./main-scene";
 import Scene from "./scene";
 
-const scenes: Scene[] = [MainScene];
+const scenes: typeof Scene[] = [MainScene];
 
 export { scenes };

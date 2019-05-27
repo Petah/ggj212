@@ -1,7 +1,4 @@
-import { Actor } from "./actor";
+import { Player } from "./player";
 
-export class Player extends Actor {
-    constructor(params) {
-        super(params);
-    }
+export class Engineer extends Player {
 }

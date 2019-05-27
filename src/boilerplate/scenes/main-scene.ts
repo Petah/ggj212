@@ -1,16 +1,9 @@
-import Entity from './entity';
-import Light from './light';
+import Light from '../objects/lighting/light';
+import Scene from "./scene";
 
 declare var Vue: any;
 
-export class MainScene extends Phaser.Scene {
-
-    public map: Phaser.Tilemaps.Tilemap;
-    public backgroundLayer: any;
-    public entities: Entity[] = [];
-    public tileset: Phaser.Tilemaps.Tileset;
-    public ui: any;
-
+export class MainScene extends Scene {
     constructor() {
         super({
             key: 'MainScene',
@@ -86,7 +79,7 @@ export class MainScene extends Phaser.Scene {
         this.map = this.add.tilemap('Tile Layer 1');
         this.tileset = this.map.addTilesetImage('test', 'tiles');
         this.backgroundLayer = this.map.createDynamicLayer('Tile Layer 1', this.tileset, 0, 0);
-        this.entities.push(new Light(this));
+        this.entities.push(new Light({ scene: this }));
     }
 
     public update(): void {

@@ -1,21 +1,16 @@
-import Drawable from "../drawable";
+import Entity from "../entity";
 
-export abstract class Actor extends Drawable {
-    activeActor: boolean = false;
+export abstract class Actor extends Entity {
+    // Physics
+    body: Phaser.Physics.Arcade.Body;
 
     // Stats
     health: number;
-    velocity: number;
     class: string;
-
-    // Input
-    cursors: Phaser.Input.Keyboard.CursorKeys;
 
     public create(params): void {
         this.health = params.health || 100;
-        this.velocity = params.velocity || 0;
         this.class = params.class || "human";
-        this.cursors = this.scene.input.keyboard.createCursorKeys();
     }
 
     public update(): void {
@@ -23,25 +18,6 @@ export abstract class Actor extends Drawable {
             this.destroy();
 
             return;
-        }
-
-        // Only handle inputs for active players
-        if (this.activeActor) {
-            this.handleInput();
-        }
-    }
-
-    private handleInput() {
-        if (this.cursors.up.isDown) {
-            this.body.setVelocityY(-160);
-        } else if (this.cursors.down.isDown) {
-            this.body.setVelocityY(160);
-        } else if (this.cursors.left.isDown) {
-            this.body.setVelocityX(-160);
-        } else if (this.cursors.right.isDown) {
-            this.body.setVelocityX(160);
-        } else {
-            this.body.setVelocity(0, 0);
         }
     }
 }
