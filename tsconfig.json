@@ -7,11 +7,11 @@
         "./src/boilerplate/tilemaps"
     ],
     "files": [
-        "src/boilderplate/types/**/*.d.ts",
-        "node_modules/phaser/types/phaser.d.ts",
-        "node_modules/vue/types/vue.d.ts"
+        "./src/boilerplate/types/typings.d.ts",
+        "./node_modules/phaser/types/phaser.d.ts",
+        "./node_modules/vue/types/index.d.ts"
     ],
     "include": [
-        "src/boilerplate/**/*.ts"
+        "./src/boilerplate/**/*.ts"
     ]
 }
