@@ -1,9 +1,9 @@
 export default class Path {
-    static asset(path: string): string {
+    public static asset(path: string): string {
         return `./src/boilerplate/assets/${path}`;
     }
 
-    static base(path: string): string {
+    public static base(path: string): string {
         return `./src/boilerplate/${path}`;
     }
 }

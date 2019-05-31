@@ -1,4 +1,3 @@
-import { Player } from "./player";
+import { Player } from './player';
 
-export class Engineer extends Player {
-}
+export class Engineer extends Player {}

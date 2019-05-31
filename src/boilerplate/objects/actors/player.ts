@@ -1,16 +1,13 @@
-import { Actor } from "./actor";
+import { Actor } from './actor';
 
 export abstract class Player extends Actor {
-    activePlayer: boolean = false;
-    body: Phaser.Physics.Arcade.Body;
+    public activePlayer: boolean = false;
 
     // Stats
-    health: number;
-    velocity: number;
-    class: string;
+    public velocity: number;
 
     // Input
-    cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+    public cursors: Phaser.Types.Input.Keyboard.CursorKeys;
 
     public create(params): void {
         super.create(params);

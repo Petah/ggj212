@@ -3,31 +3,35 @@ module.exports = {
         'browser': true,
         'es6': true
     },
-    'extends': 'eslint:recommended',
+    'extends': [
+        'plugin:@typescript-eslint/recommended',
+        'prettier/@typescript-eslint',
+        'plugin:prettier/recommended',
+    ],
     'globals': {
         'Atomics': 'readonly',
-        'SharedArrayBuffer': 'readonly'
+        'SharedArrayBuffer': 'readonly',
     },
     'parserOptions': {
         'ecmaVersion': 2018,
-        'sourceType': 'module'
+        'sourceType': 'module',
     },
     'rules': {
         'indent': [
             'error',
-            4
+            4,
         ],
         'linebreak-style': [
             'error',
-            'unix'
+            'unix',
         ],
         'quotes': [
             'error',
-            'single'
+            'single',
         ],
         'semi': [
             'error',
-            'always'
-        ]
+            'always',
+        ],
     }
 };

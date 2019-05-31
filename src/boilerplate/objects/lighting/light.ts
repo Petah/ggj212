@@ -1,13 +1,13 @@
-import Entity from "../entity";
-import Vector from "../../services/math/vector";
-import Path from "../../services/path";
+import Entity from '../entity';
+import Vector from '../../services/math/vector';
+import Path from '../../services/path';
 
 export default class Light extends Entity {
     private range = 20;
     private step = 0.5;
     private sprite: Phaser.GameObjects.Sprite;
 
-    preload(): void {
+    public preload(): void {
         this.scene.load.image('light', Path.asset('lamp.png'));
     }
 
@@ -15,7 +15,7 @@ export default class Light extends Entity {
         this.sprite = this.scene.add.sprite(
             this.scene.input.activePointer.worldX,
             this.scene.input.activePointer.worldY,
-            'light'
+            'light',
         );
 
         params.scene.ui.$refs.rightSidebar.addWidget({
@@ -65,8 +65,14 @@ export default class Light extends Entity {
                 const { background, light } = this.getTile(x, y);
                 if (background) {
                     const distance = Vector.pointDistance(mouseX, mouseY, x, y);
-                    if (distance < this.range && !this.isBlocked(mouseX, mouseY, x, y)) {
-                        background.alpha = Math.max(0, 1 - distance / this.range);
+                    if (
+                        distance < this.range &&
+                        !this.isBlocked(mouseX, mouseY, x, y)
+                    ) {
+                        background.alpha = Math.max(
+                            0,
+                            1 - distance / this.range,
+                        );
                     } else {
                         background.alpha = 0;
                     }
