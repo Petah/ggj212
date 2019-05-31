@@ -1,12 +1,11 @@
-
-<template>
+<template id="widget-mouse">
     <div>
         <div>mouseX: {{ mouseX }}</div>
         <div>mouseY: {{ mouseY }}</div>
     </div>
 </template>
 
-<script>
+<script type="ts">
 export default {
     name: 'WidgetMouse',
     data() {

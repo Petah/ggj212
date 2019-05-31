@@ -4,46 +4,26 @@
 <head>
     <meta charset="UTF-8" />
     <title>phaser3-typescript</title>
-    <link rel="stylesheet" type="text/css" href="styles/css/styles.css">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/3.1.6/system.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.17.0/phaser.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
-    <script src="dist/bundle.js"></script>
+    <script src="bundle.js"></script>
 </head>
 
 <body>
     <div class="container">
         <div id="game"></div>
         <div id="ui">
-            <list ref="rightSidebar"></list>
+            <widget-list ref="rightSidebar"></widget-list>
         </div>
     </div>
-
-    <template id="list-template">
-        <div>
-            <component v-for='widget in widgets' :is='widget.type' :widget='widget' :key="widget.id" :ref="widget.id">
-            </component>
-        </div>
-    </template>
-
-    <template id="widget-mouse">
-        <div>
-            <div>mouseX: {{ mouseX }}</div>
-            <div>mouseY: {{ mouseY }}</div>
-        </div>
-    </template>
-
-    <template id="widget-light">
-        <div>
-            <div>x: {{ x }}</div>
-            <div>y: {{ y }}</div>
-            <div>range: {{ range }}</div>
-            <input type="range" min="0" max="100" step="1" v-model="range" />
-            <input type="number" v-model="range" />
-            <div>step: {{ step }}</div>
-            <input type="range" min="0.1" max="2" step="0.1" v-model="step" />
-            <input type="number" v-model="step" />
-        </div>
-    </template>
+    <script>
+        // require(['bundle.js'], function (bundle) {
+        //     console.log(bundle);
+        // });
+    </script>
 </body>
 
 </html>

@@ -1,4 +1,3 @@
-import 'phaser';
 import { MainScene } from './scenes/main-scene';
 
 // main game configuration

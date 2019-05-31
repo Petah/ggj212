@@ -11,7 +11,7 @@
     </div>
 </template>
 
-<script>
+<script type="ts">
 export default {
     template: 'WidgetLight',
     data() {

@@ -4,9 +4,10 @@
         "sourceMap": true,
         "strict": true,
         "noImplicitReturns": true,
-        "module": "es2015",
+        "module": "ESNext",
         "moduleResolution": "node",
-        "target": "es5"
+        "target": "ESNext",
+        "noEmitHelpers": true
     },
     "exclude": [
         "./src/boilerplate/tilemaps"

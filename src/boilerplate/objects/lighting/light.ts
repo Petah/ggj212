@@ -6,6 +6,7 @@ import Path from '../../services/path';
 export default class Light extends Entity {
     private range = 20;
     private step = 0.5;
+    private tileSize = 64;
     private sprite: Phaser.GameObjects.Sprite;
 
     public constructor(
@@ -19,6 +20,7 @@ export default class Light extends Entity {
             this.scene.input.activePointer.worldY,
             'light',
         );
+        console.log(this.backgroundLayer);
     }
 
     public create(params: any) {
@@ -34,7 +36,7 @@ export default class Light extends Entity {
         const x = this.scene.input.activePointer.worldX;
         const y = this.scene.input.activePointer.worldY;
         this.sprite.setPosition(x, y);
-        this.updateTiles(Math.floor(x / 16), Math.floor(y / 16));
+        this.updateTiles(Math.floor(x / this.tileSize), Math.floor(y / this.tileSize));
 
         // this.scene.ui.$refs.rightSidebar.$refs.light[0].x = x;
         // this.scene.ui.$refs.rightSidebar.$refs.light[0].y = y;
@@ -62,9 +64,9 @@ export default class Light extends Entity {
                 }
                 const distance = Vector.pointDistance(mouseX, mouseY, x, y);
                 if (distance < this.range && !this.isBlocked(mouseX, mouseY, x, y)) {
-                    // this.map.layers[0].data[y][x].alpha = Math.max(0, 1 - distance / this.range);
+                    this.map.layers[0].data[y][x].alpha = Math.max(0, 1 - distance / this.range);
                 } else {
-                    // this.map.layers[0].data[y][x].alpha = 0;
+                    this.map.layers[0].data[y][x].alpha = 0;
                 }
             }
         }
@@ -77,16 +79,18 @@ export default class Light extends Entity {
         let distance = null;
         let blocked = false;
         do {
+            const x = Math.round(cx);
+            const y = Math.round(cy);
             if (!this.isValidTile(cx, cy)) {
                 return true;
             }
             if (blocked) {
                 return true;
             }
-            // const isFloor = this.map.layers[0].data[y][x].index === -1;
-            // if (!isFloor) {
-            //     blocked = true;
-            // }
+            const isFloor = this.map.layers[1].data[y][x].index === -1;
+            if (!isFloor) {
+                blocked = true;
+            }
             distance = Vector.pointDistance(cx, cy, x2, y2);
             cx += Vector.lengthDirX(this.step, direction);
             cy += Vector.lengthDirY(this.step, direction);

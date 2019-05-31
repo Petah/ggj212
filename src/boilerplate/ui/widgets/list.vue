@@ -10,9 +10,14 @@
     </div>
 </template>
 
-<script>
+<script type="ts">
+import WidgetMouse from './mouse.vue';
+
 export default {
     name: 'WidgetList',
+    components: {
+        WidgetMouse,
+    },
     data() {
         return {
             widgets: [

@@ -6,8 +6,10 @@ export class MainScene extends Phaser.Scene {
     private entities: Entity[] = [];
     private ui: any;
     private map?: Phaser.Tilemaps.Tilemap;
+    private backgroundTileset?: Phaser.Tilemaps.Tileset;
+    private backgroundTilesetName = 'space-station';
     private backgroundLayer?: Phaser.Tilemaps.DynamicTilemapLayer;
-    private tileset?: Phaser.Tilemaps.Tileset;
+    private backgroundLayerName = 'background';
 
     public constructor() {
         super({
@@ -18,23 +20,21 @@ export class MainScene extends Phaser.Scene {
     }
 
     public preload(): void {
-        this.load.image('tiles', './src/boilerplate/assets/Tileset_Large.png');
-        this.load.tilemapTiledJSON(
-            'Tile Layer 1',
-            './src/boilerplate/tilemaps/inf.json',
-        );
-        this.load.image('light', './src/boilerplate/assets/player.png');
+        this.load.image(this.backgroundTilesetName, './assets/space-station.png');
+        this.load.tilemapTiledJSON(this.backgroundLayerName, './tilemaps/space-station.json');
+        this.load.image('light', './assets/lamp.png');
     }
 
     public create(): void {
-        this.map = this.add.tilemap('Tile Layer 1');
-        this.tileset = this.map.addTilesetImage('test', 'tiles');
+        this.map = this.add.tilemap(this.backgroundLayerName);
+        this.backgroundTileset = this.map.addTilesetImage(this.backgroundTilesetName, this.backgroundTilesetName);
         this.backgroundLayer = this.map.createDynamicLayer(
-            'Tile Layer 1',
-            this.tileset,
+            this.backgroundLayerName,
+            this.backgroundTileset,
             0,
             0,
         );
+        console.log(this.map);
         this.entities.push(new Light(this, this.map, this.backgroundLayer));
     }
 
