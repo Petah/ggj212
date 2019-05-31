@@ -1,5 +1,5 @@
 import 'phaser';
-import { scenes } from './scenes/scenes';
+import { MainScene } from './scenes/main-scene';
 
 // main game configuration
 const config: Phaser.Types.Core.GameConfig = {
@@ -7,7 +7,7 @@ const config: Phaser.Types.Core.GameConfig = {
     height: window.innerHeight,
     type: Phaser.WEBGL,
     parent: 'game',
-    scene: scenes,
+    scene: MainScene,
     physics: {
         default: 'arcade',
         arcade: {

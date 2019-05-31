@@ -1,30 +1,26 @@
-const gulp = require('gulp');
+const { src, dest, series, parallel, watch } = require('gulp');
 const browserify = require('browserify');
 const source = require('vinyl-source-stream');
 const tsify = require('tsify');
-const paths = {
-    pages: ['src/*.html']
-};
 
-gulp.task('copy-html', function () {
-    return gulp.src(paths.pages)
-        .pipe(gulp.dest('dist'));
-});
+function copyHtml() {
+    return src(['src/*.html']).pipe(dest('dist'));
+}
 
-gulp.task('default', gulp.series(gulp.parallel('copy-html'), function () {
+function browserifyTs() {
     return browserify({
         basedir: '.',
         debug: true,
         entries: ['src/boilerplate/game.ts'],
         cache: {},
-        packageCache: {}
+        packageCache: {},
     })
         .plugin(tsify)
         .bundle()
+        .on('error', e => console.error(e))
         .pipe(source('bundle.js'))
-        .pipe(gulp.dest('dist'));
-}));
+        .pipe(dest('dist'));
+}
 
-gulp.task('watch', gulp.series('default', function () {
-    return gulp.watch(['src/**/*.*'], gulp.series('default'));
-}));
+exports.watch = () => watch(['src/**/*.*'], parallel(copyHtml, browserifyTs));
+exports.default = parallel(copyHtml, browserifyTs);

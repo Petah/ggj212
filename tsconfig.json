@@ -1,7 +1,12 @@
 {
     "compilerOptions": {
-        "target": "es5",
-        "types": ["vue"]
+        "outDir": "./built/",
+        "sourceMap": true,
+        "strict": true,
+        "noImplicitReturns": true,
+        "module": "es2015",
+        "moduleResolution": "node",
+        "target": "es5"
     },
     "exclude": [
         "./src/boilerplate/tilemaps"

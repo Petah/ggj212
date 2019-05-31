@@ -1,17 +1,11 @@
-import Scene from '../scenes/scene';
+import { MainScene } from '../scenes/main-scene';
 
 abstract class Entity extends Phaser.GameObjects.GameObject {
-    protected scene: Scene;
-
-    public constructor(params) {
-        super(params.scene, params.type);
-
-        this.create(params);
+    public constructor(protected scene: MainScene, public type: string) {
+        super(scene, type);
     }
 
-    public static preload(scene: Phaser.Scene): void {}
-
-    public create(params): void {}
+    public static preload(scene: MainScene): void {}
 }
 
 export default Entity;
