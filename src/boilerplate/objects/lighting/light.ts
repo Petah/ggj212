@@ -11,13 +11,15 @@ export default class Light extends Entity {
 
     public constructor(
         protected scene: MainScene,
-        private map: Phaser.Tilemaps.Tilemap,
+        private x: number,
+        private y: number,
+        private tilemap: Phaser.Tilemaps.Tilemap,
         private backgroundLayer: Phaser.Tilemaps.DynamicTilemapLayer,
     ) {
         super(scene, 'light');
         this.sprite = this.scene.add.sprite(
-            this.scene.input.activePointer.worldX,
-            this.scene.input.activePointer.worldY,
+            x,
+            y,
             'light',
         );
         console.log(this.backgroundLayer);
@@ -33,10 +35,10 @@ export default class Light extends Entity {
     }
 
     public update(): void {
-        const x = this.scene.input.activePointer.worldX;
-        const y = this.scene.input.activePointer.worldY;
-        this.sprite.setPosition(x, y);
-        this.updateTiles(Math.floor(x / this.tileSize), Math.floor(y / this.tileSize));
+        // const x = this.scene.input.activePointer.worldX;
+        // const y = this.scene.input.activePointer.worldY;
+        this.sprite.setPosition(this.x, this.y);
+        this.updateTiles(Math.floor(this.x / this.tileSize), Math.floor(this.y / this.tileSize));
 
         // this.scene.ui.$refs.rightSidebar.$refs.light[0].x = x;
         // this.scene.ui.$refs.rightSidebar.$refs.light[0].y = y;
@@ -56,17 +58,17 @@ export default class Light extends Entity {
         return true;
     }
 
-    private updateTiles(mouseX: number, mouseY: number) {
+    private updateTiles(tileX: number, tileY: number) {
         for (let x = 0; x < this.backgroundLayer.layer.width; x++) {
             for (let y = 0; y < this.backgroundLayer.layer.height; y++) {
                 if (!this.isValidTile(x, y)) {
                     continue;
                 }
-                const distance = Vector.pointDistance(mouseX, mouseY, x, y);
-                if (distance < this.range && !this.isBlocked(mouseX, mouseY, x, y)) {
-                    this.map.layers[0].data[y][x].alpha = Math.max(0, 1 - distance / this.range);
+                const distance = Vector.pointDistance(tileX, tileY, x, y);
+                if (distance < this.range && !this.isBlocked(tileX, tileY, x, y)) {
+                    this.tilemap.layers[0].data[y][x].alpha = Math.max(0, 1 - distance / this.range);
                 } else {
-                    this.map.layers[0].data[y][x].alpha = 0;
+                    this.tilemap.layers[0].data[y][x].alpha = 0;
                 }
             }
         }
@@ -87,7 +89,7 @@ export default class Light extends Entity {
             if (blocked) {
                 return true;
             }
-            const isFloor = this.map.layers[1].data[y][x].index === -1;
+            const isFloor = this.tilemap.layers[1].data[y][x].index === -1;
             if (!isFloor) {
                 blocked = true;
             }

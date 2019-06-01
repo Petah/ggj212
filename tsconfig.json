@@ -15,7 +15,8 @@
     "files": [
         "./src/boilerplate/types/typings.d.ts",
         "./node_modules/phaser/types/phaser.d.ts",
-        "./node_modules/vue/types/index.d.ts"
+        "./node_modules/vue/types/index.d.ts",
+        "./node_modules/@types/mathjs/index.d.ts"
     ],
     "include": [
         "./src/boilerplate/**/*.ts"

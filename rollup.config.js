@@ -9,7 +9,7 @@ export default {
         file: 'dist/bundle.js',
         name: 'test',
     },
-    external: ['vue', 'phaser'],
+    external: ['vue', 'phaser', 'math'],
     plugins: [
         commonjs(),
         typescript({

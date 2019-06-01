@@ -1,15 +1,17 @@
 import Light from '../objects/lighting/light';
 import { Ui } from '../ui/ui';
 import Entity from '../objects/entity';
+import { Team } from '../objects/player/team';
+import { LightMap } from '../objects/lighting/light-map';
+import { Level } from './level';
 
 export class MainScene extends Phaser.Scene {
     private entities: Entity[] = [];
-    private ui: any;
-    private map?: Phaser.Tilemaps.Tilemap;
-    private backgroundTileset?: Phaser.Tilemaps.Tileset;
+    private ui: Ui;
     private backgroundTilesetName = 'space-station';
-    private backgroundLayer?: Phaser.Tilemaps.DynamicTilemapLayer;
     private backgroundLayerName = 'background';
+
+    private level?: Level;
 
     public constructor() {
         super({
@@ -26,16 +28,19 @@ export class MainScene extends Phaser.Scene {
     }
 
     public create(): void {
-        this.map = this.add.tilemap(this.backgroundLayerName);
-        this.backgroundTileset = this.map.addTilesetImage(this.backgroundTilesetName, this.backgroundTilesetName);
-        this.backgroundLayer = this.map.createDynamicLayer(
+        const map = this.add.tilemap(this.backgroundLayerName);
+        const backgroundTileset = map.addTilesetImage(this.backgroundTilesetName, this.backgroundTilesetName);
+        const backgroundLayer = map.createDynamicLayer(
             this.backgroundLayerName,
-            this.backgroundTileset,
+            backgroundTileset,
             0,
             0,
         );
-        console.log(this.map);
-        this.entities.push(new Light(this, this.map, this.backgroundLayer));
+        this.level = new Level(
+            map,
+            backgroundTileset,
+            backgroundLayer,
+        );
     }
 
     public update(): void {
@@ -43,4 +48,9 @@ export class MainScene extends Phaser.Scene {
             entity.update();
         }
     }
+
+    private pause(): void {
+
+    }
+
 }

@@ -3,6 +3,7 @@
     "vetur.format.options.tabSize": 4,
     "cSpell.words": [
         "Tilemap",
-        "Tilemaps"
+        "Tilemaps",
+        "Tileset"
     ]
 }

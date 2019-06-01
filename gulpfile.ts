@@ -38,9 +38,13 @@ function clean() {
     ]);
 }
 
+function watchBuild() {
+    return watch(['src/**/*.*'], build);
+}
+
 const build = parallel(copyHtml, copyAssets, rollup);
 
 exports.clean = clean;
 exports.build = build;
-exports.watch = () => watch(['src/**/*.*'], build);
+exports.watch = series(build, watchBuild);
 exports.default = build;
