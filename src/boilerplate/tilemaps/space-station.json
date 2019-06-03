@@ -37,7 +37,7 @@
                  "name":"start",
                  "point":true,
                  "rotation":0,
-                 "type":"",
+                 "type":"spawn-point",
                  "visible":true,
                  "width":0,
                  "x":162,
@@ -52,8 +52,8 @@
                  "type":"light-static",
                  "visible":true,
                  "width":0,
-                 "x":157.333333333333,
-                 "y":777.333333333333
+                 "x":161.333333333333,
+                 "y":801.333333333333
                 }, 
                 {
                  "height":0,

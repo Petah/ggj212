@@ -6,4 +6,5 @@ export class LightStatic {
         public readonly y: number,
     ) {
     }
+
 }

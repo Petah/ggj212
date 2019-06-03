@@ -2,10 +2,42 @@ const { src, dest, series, parallel, watch } = require('gulp');
 const flatten = require('gulp-flatten');
 const del = require('del');
 const { exec } = require('child_process');
+const version = require('gulp-version-number');
+
 
 function copyHtml() {
     return src([
         'src/*.html',
+    ]).pipe(dest('dist'));
+}
+
+function versionHtml() {
+    return src('dist/*.html')
+        .pipe(version({
+            append: {
+                to: [
+                    {
+                        type: 'css',
+                        attr: ['href'],
+                        key: 'version',
+                        value: '%DT%',
+                        files: ['styles.css'],
+                    },
+                    {
+                        type: 'js',
+                        attr: ['src'],
+                        key: 'version',
+                        value: '%DT%',
+                        files: ['bundle.js'],
+                    },
+                ],
+            },
+        }))
+        .pipe(dest('dist'));
+}
+
+function copyCss() {
+    return src([
         'src/*.css',
     ]).pipe(dest('dist'));
 }
@@ -42,7 +74,7 @@ function watchBuild() {
     return watch(['src/**/*.*'], build);
 }
 
-const build = parallel(copyHtml, copyAssets, rollup);
+const build = series(parallel(copyHtml, copyCss, copyAssets, rollup), versionHtml);
 
 exports.clean = clean;
 exports.build = build;

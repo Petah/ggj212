@@ -4,9 +4,12 @@ import { Team } from './objects/player/team';
 const config: Phaser.Types.Core.GameConfig = {
     width: window.innerWidth,
     height: window.innerHeight,
-    type: Phaser.WEBGL,
+    type: Phaser.CANVAS,
     parent: 'game',
     scene: MainScene,
+    render: {
+        pixelArt: true,
+    },
     input: {
         mouse: true,
     },

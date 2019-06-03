@@ -2,8 +2,12 @@
     "tslint.autoFixOnSave": false,
     "vetur.format.options.tabSize": 4,
     "cSpell.words": [
+        "Debuggable",
         "Tilemap",
         "Tilemaps",
-        "Tileset"
+        "Tileset",
+        "anims",
+        "debugable",
+        "debugables"
     ]
 }

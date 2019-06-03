@@ -111,10 +111,10 @@
 </data>
  </layer>
  <objectgroup id="3" name="spawns">
-  <object id="1" name="start" x="162" y="380">
+  <object id="1" name="start" type="spawn-point" x="162" y="380">
    <point/>
   </object>
-  <object id="2" name="light" type="light-static" x="157.333" y="777.333">
+  <object id="2" name="light" type="light-static" x="161.333" y="801.333">
    <point/>
   </object>
   <object id="3" name="light" type="light-static" x="289.333" y="1753.33">
