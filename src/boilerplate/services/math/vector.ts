@@ -4,7 +4,7 @@ export function pointDirection(
     x2: number,
     y2: number,
 ): number {
-    return (Math.atan2(y2 - y1, x2 - x1) * 180) / Math.PI;
+    return clampDegrees((Math.atan2(y2 - y1, x2 - x1) * 180) / Math.PI);
 }
 
 export function pointDistance(
@@ -22,4 +22,14 @@ export function lengthDirX(length: number, direction: number): number {
 
 export function lengthDirY(length: number, direction: number): number {
     return Math.sin((direction * Math.PI) / 180) * length;
+}
+
+export function clampDegrees(degrees: number): number {
+    while (degrees >= 360) {
+        degrees -= 360;
+    }
+    while (degrees < 0) {
+        degrees += 360;
+    }
+    return degrees;
 }

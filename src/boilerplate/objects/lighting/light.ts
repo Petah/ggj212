@@ -1,7 +1,7 @@
-import Entity from '../entity';
-import Vector from '../../services/math/vector';
 import { MainScene } from '../../scenes/main-scene';
 import Path from '../../services/path';
+import { Entity } from '../entity';
+import { pointDistance, lengthDirX, lengthDirY, pointDirection } from '../../services/math/vector';
 
 export default class Light extends Entity {
     private range = 20;
@@ -64,7 +64,7 @@ export default class Light extends Entity {
                 if (!this.isValidTile(x, y)) {
                     continue;
                 }
-                const distance = Vector.pointDistance(tileX, tileY, x, y);
+                const distance = pointDistance(tileX, tileY, x, y);
                 if (distance < this.range && !this.isBlocked(tileX, tileY, x, y)) {
                     this.tilemap.layers[0].data[y][x].alpha = Math.max(0, 1 - distance / this.range);
                 } else {
@@ -75,7 +75,7 @@ export default class Light extends Entity {
     }
 
     private isBlocked(x1: number, y1: number, x2: number, y2: number): boolean {
-        const direction = Vector.pointDirection(x1, y1, x2, y2);
+        const direction = pointDirection(x1, y1, x2, y2);
         let cx = x1;
         let cy = y1;
         let distance = null;
@@ -93,9 +93,9 @@ export default class Light extends Entity {
             if (!isFloor) {
                 blocked = true;
             }
-            distance = Vector.pointDistance(cx, cy, x2, y2);
-            cx += Vector.lengthDirX(this.step, direction);
-            cy += Vector.lengthDirY(this.step, direction);
+            distance = pointDistance(cx, cy, x2, y2);
+            cx += lengthDirX(this.step, direction);
+            cy += lengthDirY(this.step, direction);
         } while (distance > this.step);
         return false;
     }
