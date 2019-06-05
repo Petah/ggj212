@@ -1,5 +1,9 @@
+const DEBUG = false;
+
 export function logDebug(...args: any) {
-    console.log.apply(console, args);
+    if (DEBUG) {
+        console.log.apply(console, args);
+    }
 }
 
 export function logInfo(...args: any) {

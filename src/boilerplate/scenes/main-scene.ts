@@ -10,9 +10,12 @@ import { Actor } from '../objects/actors/actor';
 import { Player } from '../objects/player/player';
 import { EventGroup } from './event-group';
 import { Wsad } from '../objects/player/controller/wsad';
+import { WidgetMouse } from '../ui/types/mouse';
 
 export class MainScene extends Phaser.Scene {
     private ui: Ui;
+    private uiMouse: WidgetMouse;
+
     private backgroundTilesetName = 'space-station';
     private lightTilesetName = 'light';
     private backgroundLayerName = 'background';
@@ -43,7 +46,9 @@ export class MainScene extends Phaser.Scene {
             key: 'MainScene',
         });
         (window as any).SCENE = this;
+
         this.ui = new Ui();
+        this.uiMouse = this.ui.rightSidebar.addWidget(new WidgetMouse());
     }
 
     public preload(): void {
@@ -90,6 +95,7 @@ export class MainScene extends Phaser.Scene {
     }
 
     public update(time: number, delta: number): void {
+        this.uiMouse.update(this.input.activePointer.worldX, this.input.activePointer.worldY);
         this.controls.update(delta);
         this.debug.update();
         this.step.input.call();

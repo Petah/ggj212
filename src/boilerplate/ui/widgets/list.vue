@@ -20,14 +20,7 @@ export default {
     },
     data() {
         return {
-            widgets: [
-                {
-                    id: 'mouse',
-                    type: 'widget-mouse',
-                    mouseX: null,
-                    mouseY: null,
-                },
-            ],
+            widgets: [],
         };
     },
     methods: {
