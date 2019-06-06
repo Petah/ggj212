@@ -21,6 +21,7 @@ export class Actor extends Entity {
 
     public speed = 0;
     public direction = 0;
+    public collisionPolygon: SAT.Polygon;
 
     public constructor(
         protected scene: MainScene,
@@ -37,6 +38,28 @@ export class Actor extends Entity {
 
         this.currentSprite = this.frontSprite;
         this.currentSprite.sprite.visible = true;
+
+        this.collisionPolygon = new SAT.Polygon(
+            new SAT.Vector(this.currentSprite.sprite.x, this.currentSprite.sprite.y),
+            [
+                new SAT.Vector(
+                    this.currentSprite.sprite.x,
+                    this.currentSprite.sprite.y
+                ),
+                new SAT.Vector(
+                    this.currentSprite.sprite.x + this.currentSprite.sprite.width,
+                    this.currentSprite.sprite.y
+                ),
+                new SAT.Vector(
+                    this.currentSprite.sprite.x + this.currentSprite.sprite.width,
+                    this.currentSprite.sprite.y + this.currentSprite.sprite.height
+                ),
+                new SAT.Vector(
+                    this.currentSprite.sprite.x,
+                    this.currentSprite.sprite.y + this.currentSprite.sprite.height
+                )
+            ]
+        );
     }
 
     private loadSprite(name: string): ActorSprite {

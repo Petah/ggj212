@@ -8,7 +8,7 @@ declare type Polygon = {
 
 export class CollisionMap implements IDebuggable {
 
-    private polygons: Polygon[] = [];
+    private polygons: SAT.Polygon[] = [];
 
     public constructor(
         private scene: MainScene,
@@ -24,31 +24,34 @@ export class CollisionMap implements IDebuggable {
                 continue;
             }
             for (const object of objectLayer.objects) {
+                let position = new SAT.Vector(object.x, object.y);
+                let points = [];
+
                 if (object.rectangle) {
-                    const polygon = [
-                        { x: object.x, y: object.y },
-                        { x: object.x + object.width, y: object.y },
-                        { x: object.x + object.width, y: object.y + object.height },
-                        { x: object.x, y: object.y + object.height },
+                    points = [
+                        new SAT.Vector(object.x, object.y),
+                        new SAT.Vector(object.x + object.width, object.y),
+                        new SAT.Vector(object.x + object.width, object.y + object.height),
+                        new SAT.Vector(object.x, object.y + object.height),
                     ];
-                    this.polygons.push(polygon);
                 } else if (object.polygon) {
-                    const polygon = object.polygon.map((point) => {
-                        return {
-                            x: point.x + object.x,
-                            y: point.y + object.y,
-                        };
+                    points = object.polygon.map((point: Polygon) => {
+                        return new SAT.Vector(
+                            point.x + object.x,
+                            point.y + object.y
+                        );
                     });
-                    this.polygons.push(polygon);
                 }
+
+                const polygon = new SAT.Polygon(position, points);
+                this.polygons.push(polygon);
             }
         }
-
     }
 
     public debug(debug: Debug) {
         for (const polygon of this.polygons) {
-            debug.drawPolygon(polygon);
+            debug.drawPolygon(polygon.points);
         }
     }
 }

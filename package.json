@@ -24,6 +24,7 @@
     "vue-template-compiler": "^2.6.10"
   },
   "dependencies": {
+    "@types/sat": "0.0.30",
     "phaser": "^3.17.0"
   },
   "scripts": {
