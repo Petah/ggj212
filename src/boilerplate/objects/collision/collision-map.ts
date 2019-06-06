@@ -10,7 +10,6 @@ declare type Polygon = {
 
 declare type CollidableEntity = {
     entity: Collidable,
-    body: SAT.Polygon,
     polygons: SAT.Polygon[],
 };
 
@@ -58,19 +57,21 @@ export class CollisionMap implements IDebuggable {
     }
 
     public handleCollisions() {
-        for (const polygon of this.polygons) {
+        for (const tileMapPolygon of this.polygons) {
             for (const collidable of this.collidables) {
-                for (const polygon of collidable.polygons) {
-                    var response = new SAT.Response();
-                    var collision = SAT.testPolygonPolygon(
-                        collidable.body,
-                        polygon,
+                for (const collidablePolygon of collidable.polygons) {
+                    const response = new SAT.Response();
+                    const collision = SAT.testPolygonPolygon(
+                        collidablePolygon,
+                        tileMapPolygon,
                         response
                     );
 
-                    if (collision) {
-                        console.log('------ COLLIDED! ------');
-                    }
+                    // if (collision) {
+                    //     console.log('------ COLLIDED! ------');
+                    // } else {
+                    //     console.log('------ COLLIDED! ------');
+                    // }
                 }
             }
         }
@@ -82,14 +83,6 @@ export class CollisionMap implements IDebuggable {
 
         const position = new SAT.Vector(entityPosition.x, entityPosition.y);
         const polygons: SAT.Polygon[] = [];
-
-        const bodyPolygons = entityPolygonSet[0].map(point => {
-            return new SAT.Vector(point.x, point.y);
-        });
-        const body: SAT.Polygon = new SAT.Polygon(
-            position,
-            bodyPolygons
-        );
 
         for (const polygonSet of entityPolygonSet) {
             const points = [];
@@ -105,7 +98,6 @@ export class CollisionMap implements IDebuggable {
         }
 
         const collidable = {
-            body: body,
             entity: entity,
             polygons: polygons,
         };
