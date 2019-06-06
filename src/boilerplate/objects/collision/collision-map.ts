@@ -7,13 +7,8 @@ declare interface IPolygon {
     y: number;
 }
 
-declare interface ICollidableEntity {
-    entity: ICollidable;
-    polygons: SAT.Polygon[];
-}
-
 export class CollisionMap implements IDebuggable {
-    private collidables: ICollidableEntity[] = [];
+    private collidables: ICollidable[] = [];
     private polygons: SAT.Polygon[] = [];
 
     public constructor(
@@ -58,14 +53,17 @@ export class CollisionMap implements IDebuggable {
     public handleCollisions() {
         for (const tileMapPolygon of this.polygons) {
             for (const collidable of this.collidables) {
-                for (const collidablePolygon of collidable.polygons) {
+                const polygons = this.getCollidablePolygons(collidable);
+
+                for (const polygon of polygons) {
                     const response = new SAT.Response();
                     const collision = SAT.testPolygonPolygon(
-                        collidablePolygon,
+                        polygon,
                         tileMapPolygon,
                         response,
                     );
 
+                    this.scene.debug.drawPolygon(polygon.points);
                     this.scene.uiDebug.updateCollision(collision);
                 }
             }
@@ -73,6 +71,10 @@ export class CollisionMap implements IDebuggable {
     }
 
     public addCollidable(entity: ICollidable) {
+        this.collidables.push(entity);
+    }
+
+    public getCollidablePolygons(entity: ICollidable) {
         const entityPosition = entity.getPosition();
         const entityPolygonSet = entity.getCollisionPolygons();
 
@@ -92,12 +94,7 @@ export class CollisionMap implements IDebuggable {
             polygons.push(polygon);
         }
 
-        const collidable = {
-            entity,
-            polygons,
-        };
-
-        this.collidables.push(collidable);
+        return polygons;
     }
 
     public debug(debug: Debug) {

@@ -138,20 +138,20 @@ export class Actor extends Entity implements ICollidable {
         return [
             [
                 {
-                    x: this.currentSprite.sprite.x,
-                    y: this.currentSprite.sprite.y,
+                    x: this.currentSprite.sprite.x - (this.currentSprite.sprite.width / 2),
+                    y: this.currentSprite.sprite.y - (this.currentSprite.sprite.height / 2),
                 },
                 {
-                    x: this.currentSprite.sprite.x + this.currentSprite.sprite.width,
-                    y: this.currentSprite.sprite.y,
+                    x: this.currentSprite.sprite.x + (this.currentSprite.sprite.width / 2),
+                    y: this.currentSprite.sprite.y - (this.currentSprite.sprite.height / 2),
                 },
                 {
-                    x: this.currentSprite.sprite.x + this.currentSprite.sprite.width,
-                    y: this.currentSprite.sprite.y + this.currentSprite.sprite.height,
+                    x: this.currentSprite.sprite.x + (this.currentSprite.sprite.width / 2),
+                    y: this.currentSprite.sprite.y + (this.currentSprite.sprite.height / 2),
                 },
                 {
-                    x: this.currentSprite.sprite.x,
-                    y: this.currentSprite.sprite.y + this.currentSprite.sprite.height,
+                    x: this.currentSprite.sprite.x - (this.currentSprite.sprite.width / 2),
+                    y: this.currentSprite.sprite.y + (this.currentSprite.sprite.height / 2),
                 },
             ],
         ];
