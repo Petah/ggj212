@@ -5,6 +5,7 @@ import { Matrix } from 'mathjs';
 import { matrixDebug } from '../../services/math/matrix';
 import { pointDistance, lengthDirX, lengthDirY } from '../../services/math/vector';
 import { Timer } from '../../services/timer';
+import { MainScene } from '../../scenes/main-scene';
 
 export class LightMap implements IDebuggable {
 
@@ -13,6 +14,7 @@ export class LightMap implements IDebuggable {
     private staticLights: LightStatic[] = [];
 
     public constructor(
+        private scene: MainScene,
         private tilemap: Phaser.Tilemaps.Tilemap,
     ) {
         this.matrixStatic = math.zeros(1, 1) as math.Matrix;
@@ -21,6 +23,7 @@ export class LightMap implements IDebuggable {
         if (this.tilemap.tileWidth !== this.tilemap.tileHeight) {
             throw new Error('Tiles must be square');
         }
+        // scene.debug.add(this.lightMap);
     }
 
     public setStaticLights(staticLights: LightStatic[]) {

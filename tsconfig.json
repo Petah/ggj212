@@ -13,10 +13,10 @@
         "./src/boilerplate/tilemaps"
     ],
     "files": [
-        "./src/boilerplate/types/typings.d.ts",
         "./node_modules/phaser/types/phaser.d.ts",
         "./node_modules/vue/types/index.d.ts",
-        "./node_modules/@types/mathjs/index.d.ts"
+        "./node_modules/@types/mathjs/index.d.ts",
+        "./src/boilerplate/types/typings.d.ts"
     ],
     "include": [
         "./src/boilerplate/**/*.ts"

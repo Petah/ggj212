@@ -11,23 +11,16 @@
 </template>
 
 <script type="ts">
-import WidgetMouse from './mouse.vue';
+import WidgetDebug from './debug.vue';
 
 export default {
     name: 'WidgetList',
     components: {
-        WidgetMouse,
+        WidgetDebug,
     },
     data() {
         return {
-            widgets: [
-                {
-                    id: 'mouse',
-                    type: 'widget-mouse',
-                    mouseX: null,
-                    mouseY: null,
-                },
-            ],
+            widgets: [],
         };
     },
     methods: {
