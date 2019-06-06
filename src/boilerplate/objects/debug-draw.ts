@@ -32,6 +32,10 @@ export class Debug {
         this.graphics.strokeCircle(x, y, radius);
     }
 
+    public drawPolygon(points: Array<{ x: number, y: number }>) {
+        this.graphics.strokePoints(points, true);
+    }
+
     public drawText(x: number, y: number, text: string) {
         if (x < this.scene.cameras.main.scrollX ||
             y < this.scene.cameras.main.scrollY ||
