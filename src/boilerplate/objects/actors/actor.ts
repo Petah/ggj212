@@ -2,13 +2,14 @@ import { MainScene } from '../../scenes/main-scene';
 import Path from '../../services/path';
 import { pointDirection, lengthDirX, lengthDirY } from '../../services/math/vector';
 import { Entity } from '../entity';
+import { Collidable } from "../../interfaces/collidable.interface";
 
 declare type ActorSprite = {
     sprite: Phaser.GameObjects.Sprite;
     animation: string;
 }
 
-export class Actor extends Entity {
+export class Actor extends Entity implements Collidable {
     private frontSprite: ActorSprite;
     private backSprite: ActorSprite;
     private leftSprite: ActorSprite;
@@ -19,8 +20,8 @@ export class Actor extends Entity {
     private race: string = 'human';
     private maxSpeed = 5;
 
-    public speed = 0;
-    public direction = 0;
+    public speed: number = 0;
+    public direction: number = 0;
 
     public constructor(
         protected scene: MainScene,
@@ -126,8 +127,33 @@ export class Actor extends Entity {
         }
     }
 
-    public handleCollision(overlap: SAT.Vector) {
-        this.x = overlap.x;
-        this.y = overlap.y;
+    public getPosition() {
+        return {
+            x: this.x,
+            y: this.y,
+        };
+    }
+
+    public getCollisionPolygons() {
+        return [
+            [
+                {
+                    x: this.currentSprite.sprite.x,
+                    y: this.currentSprite.sprite.y
+                },
+                {
+                    x: this.currentSprite.sprite.x + this.currentSprite.sprite.width,
+                    y: this.currentSprite.sprite.y
+                },
+                {
+                    x: this.currentSprite.sprite.x + this.currentSprite.sprite.width,
+                    y: this.currentSprite.sprite.y + this.currentSprite.sprite.height
+                },
+                {
+                    x: this.currentSprite.sprite.x,
+                    y: this.currentSprite.sprite.y + this.currentSprite.sprite.height
+                }
+            ],
+        ];
     }
 }

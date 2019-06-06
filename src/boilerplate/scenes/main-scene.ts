@@ -135,7 +135,7 @@ export class MainScene extends Phaser.Scene {
                 case 'spawn-point':
                     const spawnPoint = new SpawnPoint(object.x, object.y);
                     const actor = new Actor(this, object.x, object.y);
-                    this.collisionMap.addActor(actor);
+                    this.collisionMap.addCollidable(actor);
 
                     const player = new Player(this, actor, new Wsad(this));
                     break;

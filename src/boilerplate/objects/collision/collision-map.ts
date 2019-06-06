@@ -1,20 +1,21 @@
 import { MainScene } from "../../scenes/main-scene";
 import { IDebuggable, Debug } from "../debug-draw";
 import {Actor} from "../actors/actor";
+import {Collidable} from "../../interfaces/collidable.interface";
 
 declare type Polygon = {
     x: number;
     y: number;
 };
 
-declare type Collidable = {
-    actor: Actor;
-    body: SAT.Polygon;
+declare type CollidableEntity = {
+    entity: Collidable,
+    body: SAT.Polygon,
+    polygons: SAT.Polygon[],
 };
 
 export class CollisionMap implements IDebuggable {
-
-    private collidables: Collidable[] = [];
+    private collidables: CollidableEntity[] = [];
     private polygons: SAT.Polygon[] = [];
 
     public constructor(
@@ -59,52 +60,54 @@ export class CollisionMap implements IDebuggable {
     public handleCollisions() {
         for (const polygon of this.polygons) {
             for (const collidable of this.collidables) {
-                var response = new SAT.Response();
-                var collision = SAT.testPolygonPolygon(
-                    collidable.body,
-                    polygon,
-                    response
-                );
+                for (const polygon of collidable.polygons) {
+                    var response = new SAT.Response();
+                    var collision = SAT.testPolygonPolygon(
+                        collidable.body,
+                        polygon,
+                        response
+                    );
 
-                if (collision) {
-                    console.log('------ COLLIDED! ------');
-                    var overlapV = response.overlapV.clone().scale(-1);
-
-                    // Update actor's sprite body
-                    collidable.actor.handleCollision(overlapV);
-
-                    // Update actor's collision body
-                    collidable.body.pos.x = overlapV.x;
-                    collidable.body.pos.y = overlapV.y;
+                    if (collision) {
+                        console.log('------ COLLIDED! ------');
+                    }
                 }
             }
         }
     }
 
-    public addActor(actor: Actor) {
+    public addCollidable(entity: Collidable) {
+        const entityPosition = entity.getPosition();
+        const entityPolygonSet = entity.getCollisionPolygons();
+
+        const position = new SAT.Vector(entityPosition.x, entityPosition.y);
+        const polygons: SAT.Polygon[] = [];
+
+        const bodyPolygons = entityPolygonSet[0].map(point => {
+            return new SAT.Vector(point.x, point.y);
+        });
+        const body: SAT.Polygon = new SAT.Polygon(
+            position,
+            bodyPolygons
+        );
+
+        for (const polygonSet of entityPolygonSet) {
+            const points = [];
+            for (const polygon of polygonSet) {
+                points.push(new SAT.Vector(
+                    polygon.x,
+                    polygon.y
+                ));
+            }
+
+            const polygon = new SAT.Polygon(position, points);
+            polygons.push(polygon);
+        }
+
         const collidable = {
-            actor: actor,
-            body: new SAT.Polygon(
-                new SAT.Vector(actor.currentSprite.sprite.x, actor.currentSprite.sprite.y),
-                [
-                    new SAT.Vector(
-                        actor.currentSprite.sprite.x,
-                        actor.currentSprite.sprite.y
-                    ),
-                    new SAT.Vector(
-                        actor.currentSprite.sprite.x + actor.currentSprite.sprite.width,
-                        actor.currentSprite.sprite.y
-                    ),
-                    new SAT.Vector(
-                        actor.currentSprite.sprite.x + actor.currentSprite.sprite.width,
-                        actor.currentSprite.sprite.y + actor.currentSprite.sprite.height
-                    ),
-                    new SAT.Vector(
-                        actor.currentSprite.sprite.x,
-                        actor.currentSprite.sprite.y + actor.currentSprite.sprite.height
-                    )
-                ]
-            )
+            body: body,
+            entity: entity,
+            polygons: polygons,
         };
 
         this.collidables.push(collidable);
