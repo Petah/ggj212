@@ -18,7 +18,6 @@
     "rollup-plugin-typescript": "^1.0.1",
     "rollup-plugin-vue": "^5.0.0",
     "ts-node": "^8.2.0",
-    "tsc": "^1.20150623.0",
     "tslib": "^1.9.3",
     "tslint": "^5.17.0",
     "typescript": "^3.5.1",
@@ -33,7 +32,7 @@
     "build": "cross-env NODE_ENV=development && ./node_modules/.bin/gulp",
     "build-prod": "cross-env NODE_ENV=production && ./node_modules/.bin/gulp --production",
     "watch": "cross-env NODE_ENV=development && ./node_modules/.bin/gulp watch",
-    "lint": "./node_modules/.bin/tsc --noEmit && ./node_modules/.bin/tslint --project tsconfig.json",
+    "lint": "./node_modules/.bin/tslint --project tsconfig.json",
     "lint-fix": "./node_modules/.bin/tslint --project tsconfig.json --fix"
   }
 }
