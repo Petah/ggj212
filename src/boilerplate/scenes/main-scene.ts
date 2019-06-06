@@ -16,7 +16,7 @@ import { CollisionMap } from '../objects/collision/collision-map';
 
 export class MainScene extends Phaser.Scene {
     private ui: Ui;
-    private uiDebug: WidgetDebug;
+    public uiDebug: WidgetDebug;
 
     private backgroundTilesetName = 'space-station';
     private lightTilesetName = 'light';

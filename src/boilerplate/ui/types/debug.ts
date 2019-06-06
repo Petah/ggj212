@@ -11,4 +11,6 @@ export class WidgetDebug {
     }
 
     public updateMouse!: (mouseX: number, mouseY: number) => void;
+
+    public updateCollision!: (collision: boolean) => void;
 }

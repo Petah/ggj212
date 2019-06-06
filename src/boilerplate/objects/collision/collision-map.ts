@@ -1,6 +1,5 @@
 import { MainScene } from "../../scenes/main-scene";
 import { IDebuggable, Debug } from "../debug-draw";
-import {Actor} from "../actors/actor";
 import {Collidable} from "../../interfaces/collidable.interface";
 
 declare type Polygon = {
@@ -67,17 +66,14 @@ export class CollisionMap implements IDebuggable {
                         response
                     );
 
-                    // if (collision) {
-                    //     console.log('------ COLLIDED! ------');
-                    // } else {
-                    //     console.log('------ COLLIDED! ------');
-                    // }
+                    this.scene.uiDebug.updateCollision(collision);
                 }
             }
         }
     }
 
     public addCollidable(entity: Collidable) {
+        console.log('DEBUG', this.scene.debug);
         const entityPosition = entity.getPosition();
         const entityPolygonSet = entity.getCollisionPolygons();
 

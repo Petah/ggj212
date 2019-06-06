@@ -4,6 +4,7 @@
         <div>mouseY: {{ mouseY }}</div>
         <div>debug: <input type="checkbox" v-model="scene.debugEnabled" /> {{ scene.debugEnabled }}</div>
         <div>frame: {{ scene.frame }}</div>
+        <div>collision: {{ collision ? 'true' : 'false' }}</div>
     </div>
 </template>
 
@@ -16,6 +17,7 @@ export default {
             mouseX: null,
             mouseY: null,
             scene: {},
+            collision: false,
         };
     },
     watch: {
@@ -29,6 +31,9 @@ export default {
             this.mouseX = mouseX;
             this.mouseY = mouseY;
         },
+        updateCollision(collision) {
+            this.collision = collision;
+        }
     },
 };
 </script>
