@@ -3,7 +3,6 @@ import WidgetList from './widgets/list.vue';
 import WidgetDebug from './widgets/debug.vue';
 import { UiWidgetList } from './ui-widget-list';
 
-
 export class Ui {
     private vue: Vue;
     public readonly rightSidebar: UiWidgetList;

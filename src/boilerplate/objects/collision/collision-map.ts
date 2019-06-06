@@ -1,19 +1,19 @@
-import { MainScene } from "../../scenes/main-scene";
-import { IDebuggable, Debug } from "../debug-draw";
-import {Collidable} from "../../interfaces/collidable.interface";
+import { MainScene } from '../../scenes/main-scene';
+import { IDebuggable, Debug } from '../debug-draw';
+import { ICollidable } from '../../interfaces/collidable.interface';
 
-declare type Polygon = {
+declare interface IPolygon {
     x: number;
     y: number;
-};
+}
 
-declare type CollidableEntity = {
-    entity: Collidable,
-    polygons: SAT.Polygon[],
-};
+declare interface ICollidableEntity {
+    entity: ICollidable;
+    polygons: SAT.Polygon[];
+}
 
 export class CollisionMap implements IDebuggable {
-    private collidables: CollidableEntity[] = [];
+    private collidables: ICollidableEntity[] = [];
     private polygons: SAT.Polygon[] = [];
 
     public constructor(
@@ -30,7 +30,7 @@ export class CollisionMap implements IDebuggable {
                 continue;
             }
             for (const object of objectLayer.objects) {
-                let position = new SAT.Vector(object.x, object.y);
+                const position = new SAT.Vector(object.x, object.y);
                 let points = [];
 
                 if (object.rectangle) {
@@ -41,10 +41,10 @@ export class CollisionMap implements IDebuggable {
                         new SAT.Vector(object.x, object.y + object.height),
                     ];
                 } else if (object.polygon) {
-                    points = object.polygon.map((point: Polygon) => {
+                    points = object.polygon.map((point: IPolygon) => {
                         return new SAT.Vector(
                             point.x + object.x,
-                            point.y + object.y
+                            point.y + object.y,
                         );
                     });
                 }
@@ -63,7 +63,7 @@ export class CollisionMap implements IDebuggable {
                     const collision = SAT.testPolygonPolygon(
                         collidablePolygon,
                         tileMapPolygon,
-                        response
+                        response,
                     );
 
                     this.scene.uiDebug.updateCollision(collision);
@@ -72,8 +72,7 @@ export class CollisionMap implements IDebuggable {
         }
     }
 
-    public addCollidable(entity: Collidable) {
-        console.log('DEBUG', this.scene.debug);
+    public addCollidable(entity: ICollidable) {
         const entityPosition = entity.getPosition();
         const entityPolygonSet = entity.getCollisionPolygons();
 
@@ -85,7 +84,7 @@ export class CollisionMap implements IDebuggable {
             for (const polygon of polygonSet) {
                 points.push(new SAT.Vector(
                     polygon.x,
-                    polygon.y
+                    polygon.y,
                 ));
             }
 
@@ -94,8 +93,8 @@ export class CollisionMap implements IDebuggable {
         }
 
         const collidable = {
-            entity: entity,
-            polygons: polygons,
+            entity,
+            polygons,
         };
 
         this.collidables.push(collidable);

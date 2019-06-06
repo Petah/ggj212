@@ -1,4 +1,4 @@
-import { MainScene } from "../../scenes/main-scene";
+import { MainScene } from '../../scenes/main-scene';
 
 export class WidgetDebug {
     public readonly id = 'mouse';

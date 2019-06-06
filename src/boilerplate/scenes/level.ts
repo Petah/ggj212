@@ -9,7 +9,6 @@ import { Actor } from '../objects/actors/actor';
 
 export class Level {
 
-
     public constructor(
     ) {
     }

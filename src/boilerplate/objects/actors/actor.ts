@@ -2,14 +2,14 @@ import { MainScene } from '../../scenes/main-scene';
 import Path from '../../services/path';
 import { pointDirection, lengthDirX, lengthDirY } from '../../services/math/vector';
 import { Entity } from '../entity';
-import { Collidable } from "../../interfaces/collidable.interface";
+import { ICollidable } from '../../interfaces/collidable.interface';
 
-declare type ActorSprite = {
+declare interface ActorSprite {
     sprite: Phaser.GameObjects.Sprite;
     animation: string;
 }
 
-export class Actor extends Entity implements Collidable {
+export class Actor extends Entity implements ICollidable {
     private frontSprite: ActorSprite;
     private backSprite: ActorSprite;
     private leftSprite: ActorSprite;
@@ -139,20 +139,20 @@ export class Actor extends Entity implements Collidable {
             [
                 {
                     x: this.currentSprite.sprite.x,
-                    y: this.currentSprite.sprite.y
+                    y: this.currentSprite.sprite.y,
                 },
                 {
                     x: this.currentSprite.sprite.x + this.currentSprite.sprite.width,
-                    y: this.currentSprite.sprite.y
+                    y: this.currentSprite.sprite.y,
                 },
                 {
                     x: this.currentSprite.sprite.x + this.currentSprite.sprite.width,
-                    y: this.currentSprite.sprite.y + this.currentSprite.sprite.height
+                    y: this.currentSprite.sprite.y + this.currentSprite.sprite.height,
                 },
                 {
                     x: this.currentSprite.sprite.x,
-                    y: this.currentSprite.sprite.y + this.currentSprite.sprite.height
-                }
+                    y: this.currentSprite.sprite.y + this.currentSprite.sprite.height,
+                },
             ],
         ];
     }
