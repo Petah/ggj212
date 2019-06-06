@@ -73,13 +73,11 @@ export class MainScene extends Phaser.Scene {
 
         this.width = this.tilemap.width;
         this.height = this.tilemap.height;
-        this.lightMap = new LightMap(this.tilemap);
+        this.lightMap = new LightMap(this, this.tilemap);
 
         Actor.sceneCreate(this);
 
-        // this.debug.add(this.lightMap);
         this.loadObjects();
-        // this.lightMap = new LightMap(map);
 
         const camera = this.cameras.main;
         camera.setBounds(0, 0, this.tilemap.widthInPixels, this.tilemap.heightInPixels);
