@@ -112,6 +112,7 @@ export class MainScene extends Phaser.Scene {
         this.debug.update();
         this.step.input.call();
         this.step.update.call();
+        this.collisionMap.handleCollisions();
     }
 
     private loadObjects() {
@@ -134,6 +135,8 @@ export class MainScene extends Phaser.Scene {
                 case 'spawn-point':
                     const spawnPoint = new SpawnPoint(object.x, object.y);
                     const actor = new Actor(this, object.x, object.y);
+                    this.collisionMap.addActor(actor);
+
                     const player = new Player(this, actor, new Wsad(this));
                     break;
                 default:
