@@ -25,7 +25,13 @@ export class CollisionMap implements IDebuggable {
             }
             for (const object of objectLayer.objects) {
                 if (object.rectangle) {
-
+                    const polygon = [
+                        { x: object.x, y: object.y },
+                        { x: object.x + object.width, y: object.y },
+                        { x: object.x + object.width, y: object.y + object.height },
+                        { x: object.x, y: object.y + object.height },
+                    ];
+                    this.polygons.push(polygon);
                 } else if (object.polygon) {
                     const polygon = object.polygon.map((point) => {
                         return {
