@@ -1,4 +1,4 @@
-import { logError } from "./debug";
+import { logError } from './debug';
 
 export class LocalStorage {
     private localStoragePrefix = 'phaser';

@@ -1,7 +1,7 @@
-declare type Widget = {
+declare interface Widget {
     id: string;
     type: string;
-};
+}
 
 export class UiWidgetList {
     constructor(
@@ -10,7 +10,7 @@ export class UiWidgetList {
 
     }
 
-    addWidget<T>(widget: T): T {
+    public addWidget<T>(widget: T): T {
         this.widgetList.addWidget(widget);
         return new Proxy<any>(this, {
             get: (target, name) => {
@@ -18,7 +18,7 @@ export class UiWidgetList {
                     setTimeout(() => {
                         target.widgetList.$refs[widget.id][0][name](...args);
                     }, 1);
-                }
+                };
             },
             set: (target, name, value) => {
                 target.widgetList.$refs[widget.id][0][name] = value;

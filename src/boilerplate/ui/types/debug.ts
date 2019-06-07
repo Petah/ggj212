@@ -1,4 +1,4 @@
-import { MainScene } from "../../scenes/main-scene";
+import { MainScene } from '../../scenes/main-scene';
 
 export class WidgetDebug {
     public readonly id = 'mouse';
@@ -11,4 +11,6 @@ export class WidgetDebug {
     }
 
     public updateMouse!: (mouseX: number, mouseY: number) => void;
+
+    public updateCollision!: (collision: boolean) => void;
 }

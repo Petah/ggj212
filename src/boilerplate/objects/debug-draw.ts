@@ -1,5 +1,5 @@
-import { MainScene } from "../scenes/main-scene";
-import { logDebug } from "../services/debug";
+import { MainScene } from '../scenes/main-scene';
+import { logDebug } from '../services/debug';
 
 export class Debug {
     private debugables: IDebuggable[] = [];

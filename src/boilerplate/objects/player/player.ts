@@ -1,7 +1,7 @@
-import { Controller } from "./controller/controller";
-import { Actor } from "../actors/actor";
-import { pointDirection, pointDistance } from "../../services/math/vector";
-import { MainScene } from "../../scenes/main-scene";
+import { Controller } from './controller/controller';
+import { Actor } from '../actors/actor';
+import { pointDirection, pointDistance } from '../../services/math/vector';
+import { MainScene } from '../../scenes/main-scene';
 
 export class Player {
     constructor(

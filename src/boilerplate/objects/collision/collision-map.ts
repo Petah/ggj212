@@ -1,14 +1,15 @@
-import { MainScene } from "../../scenes/main-scene";
-import { IDebuggable, Debug } from "../debug-draw";
+import { MainScene } from '../../scenes/main-scene';
+import { IDebuggable, Debug } from '../debug-draw';
+import { ICollidable } from '../../interfaces/collidable.interface';
 
-declare type Polygon = {
+declare interface IPolygon {
     x: number;
     y: number;
-};
+}
 
 export class CollisionMap implements IDebuggable {
-
-    private polygons: Polygon[] = [];
+    private collidables: ICollidable[] = [];
+    private polygons: SAT.Polygon[] = [];
 
     public constructor(
         private scene: MainScene,
@@ -24,31 +25,86 @@ export class CollisionMap implements IDebuggable {
                 continue;
             }
             for (const object of objectLayer.objects) {
+                const position = new SAT.Vector(object.x, object.y);
+                let points = [];
+
                 if (object.rectangle) {
-                    const polygon = [
-                        { x: object.x, y: object.y },
-                        { x: object.x + object.width, y: object.y },
-                        { x: object.x + object.width, y: object.y + object.height },
-                        { x: object.x, y: object.y + object.height },
+                    points = [
+                        new SAT.Vector(object.x, object.y),
+                        new SAT.Vector(object.x + object.width, object.y),
+                        new SAT.Vector(object.x + object.width, object.y + object.height),
+                        new SAT.Vector(object.x, object.y + object.height),
                     ];
-                    this.polygons.push(polygon);
                 } else if (object.polygon) {
-                    const polygon = object.polygon.map((point) => {
-                        return {
-                            x: point.x + object.x,
-                            y: point.y + object.y,
-                        };
+                    points = object.polygon.map((point: IPolygon) => {
+                        return new SAT.Vector(
+                            point.x + object.x,
+                            point.y + object.y,
+                        );
                     });
-                    this.polygons.push(polygon);
+                }
+
+                const polygon = new SAT.Polygon(position, points);
+                this.polygons.push(polygon);
+            }
+        }
+    }
+
+    public handleCollisions() {
+        // @Todo
+    }
+
+    public addCollidable(entity: ICollidable) {
+        this.collidables.push(entity);
+    }
+
+    public getCollidablePolygons(entity: ICollidable) {
+        const entityPosition = entity.getPosition();
+        const entityPolygonSet = entity.getCollisionPolygons();
+
+        const position = new SAT.Vector(entityPosition.x, entityPosition.y);
+        const polygons: SAT.Polygon[] = [];
+
+        for (const polygonSet of entityPolygonSet) {
+            const points = [];
+            for (const polygon of polygonSet) {
+                points.push(new SAT.Vector(
+                    polygon.x,
+                    polygon.y,
+                ));
+            }
+
+            const polygon = new SAT.Polygon(position, points);
+            polygons.push(polygon);
+        }
+
+        return polygons;
+    }
+
+    public debug(debug: Debug) {
+        for (const collidable of this.collidables) {
+            const polygons = this.getCollidablePolygons(collidable);
+            for (const polygon of polygons) {
+                for (const tileMapPolygon of this.polygons) {
+                    const response = new SAT.Response();
+                    const collision = SAT.testPolygonPolygon(
+                        polygon,
+                        tileMapPolygon,
+                        response,
+                    );
+
+                    if (collision) {
+                        debug.drawPolygon(tileMapPolygon.points);
+                        debug.drawPolygon(polygon.points);
+                    }
+
+                    this.scene.uiDebug.updateCollision(collision);
                 }
             }
         }
 
-    }
-
-    public debug(debug: Debug) {
-        for (const polygon of this.polygons) {
-            debug.drawPolygon(polygon);
-        }
+        // for (const polygon of this.polygons) {
+        //     debug.drawPolygon(polygon.points);
+        // }
     }
 }

@@ -1,5 +1,5 @@
-import { MainScene } from "../../../scenes/main-scene";
-import { ControllerInput } from "./controller";
+import { MainScene } from '../../../scenes/main-scene';
+import { ControllerInput } from './controller';
 
 export class Wsad {
     private wsad: {

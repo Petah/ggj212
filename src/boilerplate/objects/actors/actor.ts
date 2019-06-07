@@ -3,26 +3,27 @@ import Path from '../../services/path';
 import { pointDirection, lengthDirX, lengthDirY } from '../../services/math/vector';
 import { Entity } from '../entity';
 import { Light } from '../lighting/light';
+import { ICollidable } from '../../interfaces/collidable.interface';
 
-declare type ActorSprite = {
+declare interface ActorSprite {
     sprite: Phaser.GameObjects.Sprite;
     animation: string;
 }
 
-export class Actor extends Entity {
+export class Actor extends Entity implements ICollidable {
     private frontSprite: ActorSprite;
     private backSprite: ActorSprite;
     private leftSprite: ActorSprite;
     private rightSprite: ActorSprite;
-    private currentSprite: ActorSprite;
+    public currentSprite: ActorSprite;
     private animationPlaying: boolean = false;
     private health: number = 100;
     private race: string = 'human';
     private maxSpeed = 5;
     private light: Light;
 
-    public speed = 0;
-    public direction = 0;
+    public speed: number = 0;
+    public direction: number = 0;
 
     public constructor(
         protected scene: MainScene,
@@ -133,4 +134,33 @@ export class Actor extends Entity {
         this.light.y = this.y;
     }
 
+    public getPosition() {
+        return {
+            x: this.x,
+            y: this.y,
+        };
+    }
+
+    public getCollisionPolygons() {
+        return [
+            [
+                {
+                    x: this.currentSprite.sprite.x - (this.currentSprite.sprite.width / 2),
+                    y: this.currentSprite.sprite.y - (this.currentSprite.sprite.height / 2),
+                },
+                {
+                    x: this.currentSprite.sprite.x + (this.currentSprite.sprite.width / 2),
+                    y: this.currentSprite.sprite.y - (this.currentSprite.sprite.height / 2),
+                },
+                {
+                    x: this.currentSprite.sprite.x + (this.currentSprite.sprite.width / 2),
+                    y: this.currentSprite.sprite.y + (this.currentSprite.sprite.height / 2),
+                },
+                {
+                    x: this.currentSprite.sprite.x - (this.currentSprite.sprite.width / 2),
+                    y: this.currentSprite.sprite.y + (this.currentSprite.sprite.height / 2),
+                },
+            ],
+        ];
+    }
 }

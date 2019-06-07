@@ -2,7 +2,7 @@ export function matrixDebug(matrix: math.Matrix, decimalPlaces: number = 0): voi
     const size = matrix.size();
     const lines = [];
     for (let y = 0; y < size[0]; y++) {
-        let line = [];
+        const line = [];
         for (let x = 0; x < size[1]; x++) {
             const value = matrix.get([y, x]);
             if (value === 0) {
