@@ -1,9 +1,8 @@
 import { MainScene } from '../../scenes/main-scene';
-import Path from '../../services/path';
-import { pointDirection, lengthDirX, lengthDirY } from '../../services/math/vector';
+import { lengthDirX, lengthDirY } from '../../services/math/vector';
 import { Entity } from '../entity';
 import { Light } from '../lighting/light';
-import { ICollidable } from '../../interfaces/collidable.interface';
+import { ICollidable } from '../collision/collision-map';
 
 declare interface ActorSprite {
     sprite: Phaser.GameObjects.Sprite;
@@ -27,8 +26,8 @@ export class Actor extends Entity implements ICollidable {
 
     public constructor(
         protected scene: MainScene,
-        private x: number,
-        private y: number,
+        public x: number,
+        public y: number,
     ) {
         super(scene, 'actor');
         // @todo need to remove events on destroy
@@ -134,32 +133,15 @@ export class Actor extends Entity implements ICollidable {
         this.light.y = this.y;
     }
 
-    public getPosition() {
-        return {
-            x: this.x,
-            y: this.y,
-        };
-    }
-
-    public getCollisionPolygons() {
+    get collisionPolygons() {
+        const width = this.currentSprite.sprite.width / 2;
+        const height = this.currentSprite.sprite.height / 2;
         return [
             [
-                {
-                    x: this.currentSprite.sprite.x - (this.currentSprite.sprite.width / 2),
-                    y: this.currentSprite.sprite.y - (this.currentSprite.sprite.height / 2),
-                },
-                {
-                    x: this.currentSprite.sprite.x + (this.currentSprite.sprite.width / 2),
-                    y: this.currentSprite.sprite.y - (this.currentSprite.sprite.height / 2),
-                },
-                {
-                    x: this.currentSprite.sprite.x + (this.currentSprite.sprite.width / 2),
-                    y: this.currentSprite.sprite.y + (this.currentSprite.sprite.height / 2),
-                },
-                {
-                    x: this.currentSprite.sprite.x - (this.currentSprite.sprite.width / 2),
-                    y: this.currentSprite.sprite.y + (this.currentSprite.sprite.height / 2),
-                },
+                { x: -width, y: -height },
+                { x: width, y: -height },
+                { x: width, y: height },
+                { x: -width, y: height },
             ],
         ];
     }

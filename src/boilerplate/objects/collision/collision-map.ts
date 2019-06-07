@@ -1,10 +1,16 @@
 import { MainScene } from '../../scenes/main-scene';
 import { IDebuggable, Debug } from '../debug-draw';
-import { ICollidable } from '../../interfaces/collidable.interface';
 
 declare interface IPolygon {
     x: number;
     y: number;
+}
+
+export interface ICollidable {
+    speed: number;
+    x: number;
+    y: number;
+    collisionPolygons: Array<Array<{ x: number, y: number }>>;
 }
 
 export class CollisionMap implements IDebuggable {
@@ -25,25 +31,23 @@ export class CollisionMap implements IDebuggable {
                 continue;
             }
             for (const object of objectLayer.objects) {
-                const position = new SAT.Vector(object.x, object.y);
                 let points = [];
-
                 if (object.rectangle) {
                     points = [
-                        new SAT.Vector(object.x, object.y),
-                        new SAT.Vector(object.x + object.width, object.y),
-                        new SAT.Vector(object.x + object.width, object.y + object.height),
-                        new SAT.Vector(object.x, object.y + object.height),
+                        new SAT.Vector(0, 0),
+                        new SAT.Vector(object.width, 0),
+                        new SAT.Vector(object.width, object.height),
+                        new SAT.Vector(0, object.height),
                     ];
                 } else if (object.polygon) {
                     points = object.polygon.map((point: IPolygon) => {
                         return new SAT.Vector(
-                            point.x + object.x,
-                            point.y + object.y,
+                            point.x,
+                            point.y,
                         );
                     });
                 }
-
+                const position = new SAT.Vector(object.x, object.y);
                 const polygon = new SAT.Polygon(position, points);
                 this.polygons.push(polygon);
             }
@@ -58,14 +62,10 @@ export class CollisionMap implements IDebuggable {
         this.collidables.push(entity);
     }
 
-    public getCollidablePolygons(entity: ICollidable) {
-        const entityPosition = entity.getPosition();
-        const entityPolygonSet = entity.getCollisionPolygons();
-
-        const position = new SAT.Vector(entityPosition.x, entityPosition.y);
+    public getCollidablePolygons(collidable: ICollidable) {
         const polygons: SAT.Polygon[] = [];
 
-        for (const polygonSet of entityPolygonSet) {
+        for (const polygonSet of collidable.collisionPolygons) {
             const points = [];
             for (const polygon of polygonSet) {
                 points.push(new SAT.Vector(
@@ -73,7 +73,7 @@ export class CollisionMap implements IDebuggable {
                     polygon.y,
                 ));
             }
-
+            const position = new SAT.Vector(collidable.x, collidable.y);
             const polygon = new SAT.Polygon(position, points);
             polygons.push(polygon);
         }
@@ -82,10 +82,12 @@ export class CollisionMap implements IDebuggable {
     }
 
     public debug(debug: Debug) {
-        for (const collidable of this.collidables) {
-            const polygons = this.getCollidablePolygons(collidable);
-            for (const polygon of polygons) {
-                for (const tileMapPolygon of this.polygons) {
+        for (const tileMapPolygon of this.polygons) {
+            debug.drawPolygon(this.satPolygonToWorldPosition(tileMapPolygon), 0x0000ff);
+            for (const collidable of this.collidables) {
+                const polygons = this.getCollidablePolygons(collidable);
+                for (const polygon of polygons) {
+                    // debug.drawPolygon(this.satPolygonToWorldPosition(polygon), 0x00ff00);
                     const response = new SAT.Response();
                     const collision = SAT.testPolygonPolygon(
                         polygon,
@@ -94,17 +96,22 @@ export class CollisionMap implements IDebuggable {
                     );
 
                     if (collision) {
-                        debug.drawPolygon(tileMapPolygon.points);
-                        debug.drawPolygon(polygon.points);
+                        debug.drawPolygon(this.satPolygonToWorldPosition(tileMapPolygon));
+                        debug.drawPolygon(this.satPolygonToWorldPosition(polygon));
                     }
 
                     this.scene.uiDebug.updateCollision(collision);
                 }
             }
         }
+    }
 
-        // for (const polygon of this.polygons) {
-        //     debug.drawPolygon(polygon.points);
-        // }
+    private satPolygonToWorldPosition(satPolygon: SAT.Polygon): Array<{ x: number, y: number }> {
+        return satPolygon.points.map((point) => {
+            return {
+                x: point.x + satPolygon.pos.x,
+                y: point.y + satPolygon.pos.y,
+            };
+        });
     }
 }

@@ -28,11 +28,13 @@ export class Debug {
         }
     }
 
-    public drawCircle(x: number, y: number, radius: number) {
+    public drawCircle(x: number, y: number, radius: number, color: number = 0xff0000) {
+        this.graphics.lineStyle(3, color, 0.8);
         this.graphics.strokeCircle(x, y, radius);
     }
 
-    public drawPolygon(points: Array<{ x: number, y: number }>) {
+    public drawPolygon(points: Array<{ x: number, y: number }>, color: number = 0xff0000) {
+        this.graphics.lineStyle(3, color, 0.8);
         this.graphics.strokePoints(points, true);
     }
 
