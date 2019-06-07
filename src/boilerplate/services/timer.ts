@@ -1,6 +1,6 @@
 export class Timer {
     public startTime: number;
-    public time?: number;
+    public time: number = 0;
 
     constructor() {
         this.startTime = performance.now();

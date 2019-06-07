@@ -5,6 +5,10 @@
         <div>debug: <input type="checkbox" v-model="scene.debugEnabled" /> {{ scene.debugEnabled }}</div>
         <div>collision: {{ collision ? 'true' : 'false' }}</div>
         <div>frame: {{ scene.frame }}</div>
+        <div>
+            timers:
+            <div v-for="(timer, name) in scene.timers" :key="name">{{ name }}: {{ timer.time.toFixed(4) }}</div>
+        </div>
     </div>
 </template>
 

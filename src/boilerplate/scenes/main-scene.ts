@@ -13,6 +13,7 @@ import { Wsad } from '../objects/player/controller/wsad';
 import { WidgetDebug } from '../ui/types/debug';
 import { LocalStorage } from '../services/local-storage';
 import { CollisionMap } from '../objects/collision/collision-map';
+import { Timer } from '../services/timer';
 
 export class MainScene extends Phaser.Scene {
     private ui: Ui;
@@ -32,6 +33,12 @@ export class MainScene extends Phaser.Scene {
     public debugEnabled: boolean = false;
 
     private frame = 0;
+    private timers = {
+        update: new Timer(),
+        debug: new Timer(),
+        input: new Timer(),
+        collision: new Timer(),
+    };
 
     private teams: Team[] = [];
     public lightMap!: LightMap;
@@ -47,6 +54,7 @@ export class MainScene extends Phaser.Scene {
         update: new EventGroup<(time: number, delta: number) => void>(),
     };
     public storage: LocalStorage;
+
 
     public constructor() {
         super({
@@ -106,13 +114,26 @@ export class MainScene extends Phaser.Scene {
     }
 
     public update(time: number, delta: number): void {
-        this.frame++;
-        this.uiDebug.updateMouse(this.input.activePointer.worldX, this.input.activePointer.worldY);
+        // Camera
         this.controls.update(delta);
+        this.frame++;
+
+        if (this.frame % 10 == 0) this.timers.debug.start();
+        this.uiDebug.updateMouse(this.input.activePointer.worldX, this.input.activePointer.worldY);
         this.debug.update();
+        if (this.frame % 10 == 0) this.timers.debug.stop();
+
+        if (this.frame % 10 == 0) this.timers.input.start();
         this.step.input.call();
+        if (this.frame % 10 == 0) this.timers.input.stop();
+
+        if (this.frame % 10 == 0) this.timers.update.start();
         this.step.update.call();
+        if (this.frame % 10 == 0) this.timers.update.stop();
+
+        if (this.frame % 10 == 0) this.timers.collision.start();
         this.collisionMap.handleCollisions();
+        if (this.frame % 10 == 0) this.timers.collision.stop();
     }
 
     private loadObjects() {
