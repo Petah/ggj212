@@ -2,6 +2,7 @@ import { MainScene } from '../../scenes/main-scene';
 import Path from '../../services/path';
 import { pointDirection, lengthDirX, lengthDirY } from '../../services/math/vector';
 import { Entity } from '../entity';
+import { Light } from '../lighting/light';
 
 declare type ActorSprite = {
     sprite: Phaser.GameObjects.Sprite;
@@ -18,6 +19,7 @@ export class Actor extends Entity {
     private health: number = 100;
     private race: string = 'human';
     private maxSpeed = 5;
+    private light: Light;
 
     public speed = 0;
     public direction = 0;
@@ -34,6 +36,8 @@ export class Actor extends Entity {
         this.backSprite = this.loadSprite('back_strip2');
         this.leftSprite = this.loadSprite('left_strip4');
         this.rightSprite = this.loadSprite('right_strip4');
+
+        this.light = new Light(scene, this.x, this.y);
 
         this.currentSprite = this.frontSprite;
         this.currentSprite.sprite.visible = true;
@@ -124,6 +128,9 @@ export class Actor extends Entity {
                 this.currentSprite.sprite.anims.stop();
             }
         }
+
+        this.light.x = this.x;
+        this.light.y = this.y;
     }
 
 }

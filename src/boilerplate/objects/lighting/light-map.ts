@@ -1,22 +1,30 @@
 import { logDebug } from '../../services/debug';
 import { Debug, IDebuggable } from '../debug-draw';
 import { LightStatic } from './light-static';
-import { Matrix } from 'mathjs';
 import { matrixDebug } from '../../services/math/matrix';
 import { pointDistance, lengthDirX, lengthDirY } from '../../services/math/vector';
 import { Timer } from '../../services/timer';
 import { MainScene } from '../../scenes/main-scene';
+import { Light } from './light';
+
+declare type ILight = {
+    x: number;
+    y: number;
+    range: number;
+};
 
 export class LightMap implements IDebuggable {
 
     private matrixStatic: math.Matrix;
     private matrixDynamic: math.Matrix;
-    private staticLights: LightStatic[] = [];
+    private staticLights: ILight[] = [];
+    private lights: ILight[] = [];
 
     public constructor(
         private scene: MainScene,
         private tilemap: Phaser.Tilemaps.Tilemap,
     ) {
+        scene.step.update.add(this.update.bind(this));
         this.matrixStatic = math.zeros(1, 1) as math.Matrix;
         this.matrixDynamic = math.zeros(this.height, this.width) as math.Matrix;
         logDebug('Light map', this.height, this.width, this.tilemap.tileWidth + 'x' + this.tilemap.tileHeight);
@@ -26,32 +34,33 @@ export class LightMap implements IDebuggable {
         // scene.debug.add(this.lightMap);
     }
 
-    public setStaticLights(staticLights: LightStatic[]) {
+    public setStaticLights(staticLights: ILight[]) {
         logDebug('Updating static lights', staticLights);
         const timer = new Timer();
         this.staticLights = staticLights;
-        this.matrixStatic = math.zeros(this.height, this.width) as math.Matrix;
-        for (const staticLight of staticLights) {
-            logDebug('Static light', staticLight);
-            for (let direction = 0; direction < 360; direction += 2) {
-                this.matrixStatic = this.castRay(staticLight.x, staticLight.y, direction, staticLight.range * this.tileSize, 0.45, this.matrixStatic);
-            }
-        }
-        this.blurStaticLights();
-        for (let y = 0; y < this.height; y++) {
-            for (let x = 0; x < this.width; x++) {
-                this.tilemap.layers[0].data[y][x].alpha = this.matrixStatic.get([y, x]);
-            }
-        }
+        this.matrixStatic = this.updateLightMap(this.staticLights, 2);
+        this.applyMatrixToTiles(this.matrixStatic);
         logDebug('Processed static lights', timer.stop());
         logDebug(matrixDebug(this.matrixStatic, 2));
     }
 
-    private blurStaticLights() {
-        const lightMatrix = this.matrixStatic.clone();
+    private updateLightMap(lights: ILight[], directionStep: number): math.Matrix {
+        // @todo cull lights outside of camera view
+        let matrix = math.zeros(this.height, this.width) as math.Matrix;
+        for (const light of lights) {
+            for (let direction = 0; direction < 360; direction += directionStep) {
+                matrix = this.castRay(light.x, light.y, direction, light.range * this.tileSize, 0.45, matrix);
+            }
+        }
+        matrix = this.blurLights(matrix);
+        return matrix;
+    }
+
+    private blurLights(matrix: math.Matrix) {
+        const lightMatrix = matrix.clone();
         for (let y = 0; y < this.height; y++) {
             for (let x = 0; x < this.width; x++) {
-                this.matrixStatic = this.matrixStatic.set([y, x], Math.max(
+                matrix = matrix.set([y, x], Math.max(
                     lightMatrix.get([y, x]),
                     this.matrixGet(lightMatrix, x + 1, y, 0) / 2,
                     this.matrixGet(lightMatrix, x, y + 1, 0) / 2,
@@ -67,6 +76,16 @@ export class LightMap implements IDebuggable {
                     this.matrixGet(lightMatrix, x - 1, y + 1, 0) / 3,
                     this.matrixGet(lightMatrix, x - 1, y - 1, 0) / 3,
                 ));
+            }
+        }
+        return matrix;
+    }
+
+    private applyMatrixToTiles(matrix: math.Matrix) {
+        // @todo cull tiles outside of camera view
+        for (let y = 0; y < this.height; y++) {
+            for (let x = 0; x < this.width; x++) {
+                this.tilemap.layers[0].data[y][x].alpha = matrix.get([y, x]);
             }
         }
     }
@@ -93,7 +112,7 @@ export class LightMap implements IDebuggable {
             }
         }
     }
-
+//https://github.com/Silverwolf90/2d-visibility
     private castRay(x: number, y: number, direction: number, range: number, step: number, matrix: math.Matrix): math.Matrix {
         let currentX = x;
         let currentY = y;
@@ -121,6 +140,20 @@ export class LightMap implements IDebuggable {
             currentY < this.tilemap.heightInPixels
         );
         return matrix;
+    }
+
+    public update(time: number, delta: number) {
+        let matrix = this.updateLightMap(this.lights, 90);
+        for (let y = 0; y < this.height; y++) {
+            for (let x = 0; x < this.width; x++) {
+                matrix.set([y, x], Math.max(matrix.get([y, x]), this.matrixStatic.get([y, x])));
+            }
+        }
+        this.applyMatrixToTiles(matrix);
+    }
+
+    public addLight(light: Light) {
+        this.lights.push(light);
     }
 
     private get width(): number {

@@ -34,7 +34,7 @@ export class MainScene extends Phaser.Scene {
     private frame = 0;
 
     private teams: Team[] = [];
-    private lightMap!: LightMap;
+    public lightMap!: LightMap;
     private collisionMap!: CollisionMap;
     private controls!: Phaser.Cameras.Controls.FixedKeyControl;
 
