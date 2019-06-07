@@ -9,7 +9,7 @@ export class Debug {
     private samples: number = 0;
     private textPoolCount = 0;
     private textPool: Phaser.GameObjects.Text[] = [];
-    private const updateEveryFrames = 30;
+    private const updateEveryFrames = 1;
 
     constructor(
         private scene: MainScene,
