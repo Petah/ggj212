@@ -51,23 +51,7 @@ export class CollisionMap implements IDebuggable {
     }
 
     public handleCollisions() {
-        for (const tileMapPolygon of this.polygons) {
-            for (const collidable of this.collidables) {
-                const polygons = this.getCollidablePolygons(collidable);
-
-                for (const polygon of polygons) {
-                    const response = new SAT.Response();
-                    const collision = SAT.testPolygonPolygon(
-                        polygon,
-                        tileMapPolygon,
-                        response,
-                    );
-
-                    this.scene.debug.drawPolygon(polygon.points);
-                    this.scene.uiDebug.updateCollision(collision);
-                }
-            }
-        }
+        // @Todo
     }
 
     public addCollidable(entity: ICollidable) {
@@ -98,8 +82,29 @@ export class CollisionMap implements IDebuggable {
     }
 
     public debug(debug: Debug) {
-        for (const polygon of this.polygons) {
-            debug.drawPolygon(polygon.points);
+        for (const collidable of this.collidables) {
+            const polygons = this.getCollidablePolygons(collidable);
+            for (const polygon of polygons) {
+                for (const tileMapPolygon of this.polygons) {
+                    const response = new SAT.Response();
+                    const collision = SAT.testPolygonPolygon(
+                        polygon,
+                        tileMapPolygon,
+                        response,
+                    );
+
+                    if (collision) {
+                        debug.drawPolygon(tileMapPolygon.points);
+                        debug.drawPolygon(polygon.points);
+                    }
+
+                    this.scene.uiDebug.updateCollision(collision);
+                }
+            }
         }
+
+        // for (const polygon of this.polygons) {
+        //     debug.drawPolygon(polygon.points);
+        // }
     }
 }
