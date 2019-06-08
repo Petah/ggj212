@@ -6,7 +6,7 @@ import { Segment } from './wall-tracking/segment';
 import { Point } from './wall-tracking/point';
 import { loadMap } from './wall-tracking/load-map';
 import { calculateVisibility } from './wall-tracking/visibility';
-import { lengthDirX, pointDirection, lengthDirY } from '../../services/math/vector';
+import { lengthDirX, pointDirection, lengthDirY, pointDistance } from '../../services/math/vector';
 
 interface ILightWallObject {
     polyline: Point[];
@@ -64,10 +64,14 @@ export class LightMapWall implements IDebuggable {
                 if (x * this.tilemap.tileWidth > this.scene.cameras.main.scrollX + this.scene.cameras.main.width) {
                     continue;
                 }
+                const tileCenter = {
+                    x: x * this.tilemap.tileWidth + this.tilemap.tileWidth / 2,
+                    y: y * this.tilemap.tileHeight + this.tilemap.tileHeight / 2,
+                }
                 let visible = false;
                 for (const points of this.visibility) {
                     if (this.isInTriangle(
-                        { x: x * this.tilemap.tileWidth + this.tilemap.tileWidth / 2, y: y * this.tilemap.tileHeight + this.tilemap.tileHeight / 2 },
+                        tileCenter,
                         lightSource,
                         this.extendAngle(points[0], lightSource),
                         this.extendAngle(points[1], lightSource),
@@ -77,7 +81,7 @@ export class LightMapWall implements IDebuggable {
                     }
                 }
                 if (visible) {
-                    this.shadowLayer.layer.data[y][x].alpha = 0;
+                    this.shadowLayer.layer.data[y][x].alpha = pointDistance(lightSource.x, lightSource.y, tileCenter.x, tileCenter.y) / 600;
                 } else {
                     this.shadowLayer.layer.data[y][x].alpha = 1;
                 }
