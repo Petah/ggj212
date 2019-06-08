@@ -7,6 +7,7 @@ import { Point } from './wall-tracking/point';
 import { loadMap } from './wall-tracking/load-map';
 import { calculateVisibility } from './wall-tracking/visibility';
 import { lengthDirX, pointDirection, lengthDirY, pointDistance } from '../../services/math/vector';
+import { logSample } from '../../services/log';
 
 interface ILightWallObject {
     polyline: Point[];
@@ -47,23 +48,16 @@ export class LightMapWall implements IDebuggable {
     }
 
     public update(time: number, delta: number) {
-        const lightSource = new Point(this.lights[0].x, this.lights[0].y);
-        const endpoints = loadMap(this.walls, lightSource);
-        this.visibility = calculateVisibility(lightSource, endpoints);
-        for (let y = 0; y < this.tilemap.height; y++) {
-            if (y * this.tilemap.tileHeight < this.scene.cameras.main.scrollY) {
-                continue;
-            }
-            if (y * this.tilemap.tileHeight > this.scene.cameras.main.scrollY + this.scene.cameras.main.height) {
-                continue;
-            }
-            for (let x = 0; x < this.tilemap.width; x++) {
-                if (x * this.tilemap.tileWidth < this.scene.cameras.main.scrollX) {
-                    continue;
-                }
-                if (x * this.tilemap.tileWidth > this.scene.cameras.main.scrollX + this.scene.cameras.main.width) {
-                    continue;
-                }
+        for (const { x, y, tile } of this.getVisibleTiles()) {
+            tile.alpha = 1;
+        }
+
+        // const lightSource = new Point(this.lights[0].x, this.lights[0].y);
+        for (const light of this.lights) {
+            // @todo cull lights that are way off the camera view
+            const endpoints = loadMap(this.walls, light);
+            this.visibility = calculateVisibility(light, endpoints);
+            for (const { x, y, tile } of this.getVisibleTiles()) {
                 const tileCenter = {
                     x: x * this.tilemap.tileWidth + this.tilemap.tileWidth / 2,
                     y: y * this.tilemap.tileHeight + this.tilemap.tileHeight / 2,
@@ -72,19 +66,42 @@ export class LightMapWall implements IDebuggable {
                 for (const points of this.visibility) {
                     if (this.isInTriangle(
                         tileCenter,
-                        lightSource,
-                        this.extendAngle(points[0], lightSource),
-                        this.extendAngle(points[1], lightSource),
+                        light,
+                        this.extendAngle(points[0], light),
+                        this.extendAngle(points[1], light),
                     )) {
                         visible = true;
                         break;
                     }
                 }
                 if (visible) {
-                    this.shadowLayer.layer.data[y][x].alpha = pointDistance(lightSource.x, lightSource.y, tileCenter.x, tileCenter.y) / 600;
-                } else {
-                    this.shadowLayer.layer.data[y][x].alpha = 1;
+                    const fadedAlpha = pointDistance(light.x, light.y, tileCenter.x, tileCenter.y) / 600;
+                    tile.alpha = Math.min(fadedAlpha, tile.alpha);
                 }
+            }
+        }
+    }
+
+    private *getVisibleTiles() {
+        for (let y = 0; y < this.tilemap.height; y++) {
+            if (y * this.tilemap.tileHeight < this.scene.cameras.main.scrollY - this.tilemap.tileHeight) {
+                continue;
+            }
+            if (y * this.tilemap.tileHeight > this.scene.cameras.main.scrollY + this.scene.cameras.main.height) {
+                continue;
+            }
+            for (let x = 0; x < this.tilemap.width; x++) {
+                if (x * this.tilemap.tileWidth < this.scene.cameras.main.scrollX - this.tilemap.tileWidth) {
+                    continue;
+                }
+                if (x * this.tilemap.tileWidth > this.scene.cameras.main.scrollX + this.scene.cameras.main.width) {
+                    continue;
+                }
+                yield {
+                    x,
+                    y,
+                    tile: this.shadowLayer.layer.data[y][x],
+                };
             }
         }
     }
@@ -133,6 +150,7 @@ export class LightMapWall implements IDebuggable {
     }
 
     public setStaticLights(staticLights: ILight[]) {
+        this.lights.push(...staticLights);
     }
 
     public addLight(light: Light) {
