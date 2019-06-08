@@ -1,8 +1,8 @@
-export interface ControllerInput {
+export interface IControllerInput {
     xAxis: number;
     yAxis: number;
 }
 
-export interface Controller {
-    getInput(): ControllerInput;
+export interface IController {
+    getInput(): IControllerInput;
 }

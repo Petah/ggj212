@@ -58,7 +58,6 @@ export class MainScene extends Phaser.Scene {
     };
     public storage: LocalStorage;
 
-
     public constructor() {
         super({
             key: 'MainScene',
@@ -91,8 +90,7 @@ export class MainScene extends Phaser.Scene {
             }
 
         });
-        this.cameras.main.setBackgroundColor('#66ff66')
-
+        this.cameras.main.setBackgroundColor('#66ff66');
 
         this.tilemap = this.add.tilemap(this.backgroundLayerName);
         const backgroundTileset = this.tilemap.addTilesetImage(this.spaceStationTilesetName, this.spaceStationTilesetName);

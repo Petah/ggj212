@@ -1,3 +1,4 @@
+// tslint:disable:no-console
 export const logSettings = {
     verbose: false,
     debug: false,

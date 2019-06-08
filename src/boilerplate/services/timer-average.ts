@@ -1,4 +1,4 @@
-import { Timer } from "./timer";
+import { Timer } from './timer';
 
 export class TimerAverage extends Timer {
     private times: number[] = [];

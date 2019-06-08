@@ -1,4 +1,4 @@
-import { Controller } from './controller/controller';
+import { IController } from './controller/controller';
 import { Actor } from '../actors/actor';
 import { pointDirection, pointDistance } from '../../services/math/vector';
 import { MainScene } from '../../scenes/main-scene';
@@ -7,7 +7,7 @@ export class Player {
     constructor(
         private scene: MainScene,
         private actor: Actor,
-        private controller: Controller,
+        private controller: IController,
     ) {
         scene.step.input.add(this.update.bind(this));
     }

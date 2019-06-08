@@ -1,4 +1,4 @@
-declare interface Widget {
+export interface IWidget {
     id: string;
     type: string;
 }
@@ -10,7 +10,7 @@ export class UiWidgetList {
 
     }
 
-    public addWidget<T>(widget: T): T {
+    public addWidget<T extends IWidget>(widget: T): T {
         this.widgetList.addWidget(widget);
         return new Proxy<any>(this, {
             get: (target, name) => {

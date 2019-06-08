@@ -1,5 +1,5 @@
 import { MainScene } from '../../../scenes/main-scene';
-import { ControllerInput } from './controller';
+import { IControllerInput } from './controller';
 
 export class Wsad {
     private wsad: {
@@ -15,7 +15,7 @@ export class Wsad {
         this.wsad = scene.input.keyboard.addKeys('W,S,A,D');
     }
 
-    public getInput(): ControllerInput {
+    public getInput(): IControllerInput {
         let xAxis = 0;
         if (this.wsad.A.isDown) {
             xAxis = -1;

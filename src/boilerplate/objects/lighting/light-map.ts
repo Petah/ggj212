@@ -7,11 +7,11 @@ import { Timer } from '../../services/timer';
 import { MainScene } from '../../scenes/main-scene';
 import { Light } from './light';
 
-declare type ILight = {
+declare interface ILight {
     x: number;
     y: number;
     range: number;
-};
+}
 
 export interface ILightable {
     x: number;
@@ -122,7 +122,7 @@ export class LightMap implements IDebuggable {
         //     }
         // }
     }
-    //https://github.com/Silverwolf90/2d-visibility
+    // https://github.com/Silverwolf90/2d-visibility
     private castRay(x: number, y: number, direction: number, range: number, step: number, matrix: math.Matrix): math.Matrix {
         let currentX = x;
         let currentY = y;

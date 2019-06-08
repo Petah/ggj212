@@ -1,5 +1,5 @@
-import { Timer } from "../services/timer";
-import { MainScene } from "./main-scene";
+import { Timer } from '../services/timer';
+import { MainScene } from './main-scene';
 
 export class EventGroup<T extends (...args: any) => void> {
     private callables: T[] = [];

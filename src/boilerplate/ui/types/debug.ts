@@ -1,6 +1,7 @@
 import { MainScene } from '../../scenes/main-scene';
+import { IWidget } from '../ui-widget-list';
 
-export class WidgetDebug {
+export class WidgetDebug implements IWidget {
     public readonly id = 'mouse';
     public readonly type = 'WidgetDebug';
 

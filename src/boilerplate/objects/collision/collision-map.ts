@@ -23,8 +23,7 @@ export class CollisionMap implements IDebuggable {
         private tilemap: Phaser.Tilemaps.Tilemap,
     ) {
         scene.step.debug.add(this.debug.bind(this));
-        scene.step.collision.add(this.handleCollisions.bind(this));
-        scene.step.collision.add(this.handleCollisions.bind(this));
+        // scene.step.collision.add(this.handleCollisions.bind(this));
         this.loadCollisions();
     }
 
@@ -89,8 +88,8 @@ export class CollisionMap implements IDebuggable {
         }
     }
 
-    public handleCollisions() {
-    }
+    // public handleCollisions() {
+    // }
 
     public addCollidable(entity: ICollidable) {
         this.collidables.push(entity);
@@ -108,8 +107,7 @@ export class CollisionMap implements IDebuggable {
                 ));
             }
             const position = new SAT.Vector(collidable.x, collidable.y);
-            const polygon = new SAT.Polygon(position, points);
-            polygons.push(polygon);
+            polygons.push(new SAT.Polygon(position, points));
         }
 
         return polygons;

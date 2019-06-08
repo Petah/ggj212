@@ -5,17 +5,17 @@ import { Light } from '../lighting/light';
 import { ICollidable } from '../collision/collision-map';
 import { ILightable } from '../lighting/light-map';
 
-declare interface ActorSprite {
+declare interface IActorSprite {
     sprite: Phaser.GameObjects.Sprite;
     animation: string;
 }
 
-export class Actor extends Entity implements ICollidable, ILightable {
-    private frontSprite: ActorSprite;
-    private backSprite: ActorSprite;
-    private leftSprite: ActorSprite;
-    private rightSprite: ActorSprite;
-    public currentSprite: ActorSprite;
+export class Actor implements ICollidable, ILightable {
+    private frontSprite: IActorSprite;
+    private backSprite: IActorSprite;
+    private leftSprite: IActorSprite;
+    private rightSprite: IActorSprite;
+    public currentSprite: IActorSprite;
     private animationPlaying: boolean = false;
     private health: number = 100;
     private race: string = 'human';
@@ -45,7 +45,7 @@ export class Actor extends Entity implements ICollidable, ILightable {
         this.currentSprite.sprite.visible = true;
     }
 
-    private loadSprite(name: string): ActorSprite {
+    private loadSprite(name: string): IActorSprite {
         const sprite = this.scene.add.sprite(
             this.x,
             this.y,
