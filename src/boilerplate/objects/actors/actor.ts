@@ -11,6 +11,7 @@ declare interface IActorSprite {
 }
 
 export class Actor implements ICollidable, ILightable {
+    private baseSprite: Phaser.GameObjects.Sprite;
     private frontSprite: IActorSprite;
     private backSprite: IActorSprite;
     private leftSprite: IActorSprite;
@@ -31,9 +32,9 @@ export class Actor implements ICollidable, ILightable {
         public x: number,
         public y: number,
     ) {
-        super(scene, 'actor');
         // @todo need to remove events on destroy
         scene.step.update.add(this.update.bind(this));
+        this.baseSprite = this.scene.add.sprite(this.x, this.y, 'front');
         this.frontSprite = this.loadSprite('front_strip2');
         this.backSprite = this.loadSprite('back_strip2');
         this.leftSprite = this.loadSprite('left_strip4');
@@ -43,14 +44,11 @@ export class Actor implements ICollidable, ILightable {
 
         this.currentSprite = this.frontSprite;
         this.currentSprite.sprite.visible = true;
+        this.scene.cameras.main.startFollow(this.baseSprite, true, 0.1, 0.1);
     }
 
     private loadSprite(name: string): IActorSprite {
-        const sprite = this.scene.add.sprite(
-            this.x,
-            this.y,
-            name,
-        );
+        const sprite = this.scene.add.sprite(this.x, this.y, name);
         sprite.anims.load(name + '_anim');
         sprite.visible = false;
         return {
@@ -60,6 +58,7 @@ export class Actor implements ICollidable, ILightable {
     }
 
     public static scenePreload(scene: MainScene): void {
+        scene.load.image('front', './assets/front.png');
         scene.load.spritesheet('left_strip4', './assets/left_strip4.png', { frameWidth: 50, frameHeight: 54 });
         scene.load.spritesheet('right_strip4', './assets/right_strip4.png', { frameWidth: 50, frameHeight: 54 });
         scene.load.spritesheet('back_strip2', './assets/back_strip2.png', { frameWidth: 50, frameHeight: 54 });
@@ -114,7 +113,8 @@ export class Actor implements ICollidable, ILightable {
 
                 this.currentSprite = sprite;
                 this.currentSprite.sprite.visible = true;
-                this.scene.cameras.main.startFollow(this.currentSprite.sprite);
+                this.currentSprite.sprite.x = this.x;
+                this.currentSprite.sprite.y = this.y;
             }
             if (!this.animationPlaying) {
                 this.animationPlaying = true;
@@ -124,6 +124,8 @@ export class Actor implements ICollidable, ILightable {
             this.scene.collisionMap.move(this);
             this.currentSprite.sprite.x = this.x;
             this.currentSprite.sprite.y = this.y;
+            this.baseSprite.x = this.x;
+            this.baseSprite.y = this.y;
         } else {
             if (this.animationPlaying) {
                 this.animationPlaying = false;
@@ -138,7 +140,7 @@ export class Actor implements ICollidable, ILightable {
 
     public get collisionPolygons() {
         const width = this.currentSprite.sprite.width / 3;
-        const height = this.currentSprite.sprite.height / 6 ;
+        const height = this.currentSprite.sprite.height / 6;
         return [
             [
                 { x: -width, y: -height + 10 },

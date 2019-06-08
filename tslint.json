@@ -26,6 +26,9 @@
         ],
         "object-literal-sort-keys": [
             false
+        ],
+        "arrow-parens": [
+            false
         ]
     },
     "rulesDirectory": []

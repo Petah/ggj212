@@ -24,14 +24,19 @@ export class Debug {
         this.clear();
     }
 
-    public drawCircle(x: number, y: number, radius: number, color: number = 0xff0000) {
-        this.graphics.lineStyle(3, color, 0.8);
+    public drawCircle(x: number, y: number, radius: number, color: number = 0xff0000, alpha = 0.8) {
+        this.graphics.lineStyle(3, color, alpha);
         this.graphics.strokeCircle(x, y, radius);
     }
 
-    public drawPolygon(points: Array<{ x: number, y: number }>, color: number = 0xff0000) {
-        this.graphics.lineStyle(3, color, 0.8);
+    public drawPolygon(points: Array<{ x: number, y: number }>, color: number = 0xff0000, alpha = 0.8) {
+        this.graphics.lineStyle(3, color, alpha);
         this.graphics.strokePoints(points, true);
+    }
+
+    public drawLine(x1: number, y1: number, x2: number, y2: number, color: number = 0xff0000, alpha = 0.8) {
+        this.graphics.lineStyle(3, color, alpha);
+        this.graphics.strokeLineShape(new Phaser.Geom.Line(x1, y1, x2, y2));
     }
 
     public drawText(x: number, y: number, text: string) {

@@ -1,7 +1,7 @@
 <template id="widget-debug">
     <div>
         <div>mouse: {{ mouseX | int }} {{ mouseY | int }}</div>
-        <div>camera: {{ scene.cameras ? scene.cameras.main.x : NaN }} {{ scene.cameras ? scene.cameras.main.y : NaN }}</div>
+        <div>camera: {{ scene.cameras ? scene.cameras.main.scrollX : NaN }} {{ scene.cameras ? scene.cameras.main.scrollY : NaN }}</div>
         <div>paused: <input type="checkbox" v-model="scene.paused" /> {{ scene.paused }}</div>
         <div>debug: <input type="checkbox" v-model="scene.debugEnabled" /> {{ scene.debugEnabled }}</div>
         <div>frame: {{ scene.frame }}</div>

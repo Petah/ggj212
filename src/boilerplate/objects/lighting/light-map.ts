@@ -7,7 +7,7 @@ import { Timer } from '../../services/timer';
 import { MainScene } from '../../scenes/main-scene';
 import { Light } from './light';
 
-declare interface ILight {
+export interface ILight {
     x: number;
     y: number;
     range: number;
@@ -79,10 +79,10 @@ export class LightMap implements IDebuggable {
                     // this.matrixGet(lightMatrix, x, y + 2, 0) / 3,
                     // this.matrixGet(lightMatrix, x - 2, y, 0) / 3,
                     // this.matrixGet(lightMatrix, x, y - 2, 0) / 3,
-                    this.matrixGet(lightMatrix, x + 1, y + 1, 0) / 3,
-                    this.matrixGet(lightMatrix, x + 1, y - 1, 0) / 3,
-                    this.matrixGet(lightMatrix, x - 1, y + 1, 0) / 3,
-                    this.matrixGet(lightMatrix, x - 1, y - 1, 0) / 3,
+                    this.matrixGet(lightMatrix, x + 1, y + 1, 0) / 2,
+                    this.matrixGet(lightMatrix, x + 1, y - 1, 0) / 2,
+                    this.matrixGet(lightMatrix, x - 1, y + 1, 0) / 2,
+                    this.matrixGet(lightMatrix, x - 1, y - 1, 0) / 2,
                 ));
             }
         }

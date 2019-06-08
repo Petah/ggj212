@@ -1,7 +1,6 @@
 import { Ui } from '../ui/ui';
 import { Team } from '../objects/player/team';
 import { LightMap } from '../objects/lighting/light-map';
-import { Level } from './level';
 import { Debug } from '../objects/debug-draw';
 import { logDebug, logSettings } from '../services/log';
 import { LightStatic } from '../objects/lighting/light-static';
@@ -15,6 +14,7 @@ import { LocalStorage } from '../services/local-storage';
 import { CollisionMap } from '../objects/collision/collision-map';
 import { TimerAverage } from '../services/timer-average';
 import { Depth } from '../services/depth';
+import { LightMapWall } from '../objects/lighting/light-map-wall';
 
 export class MainScene extends Phaser.Scene {
     private ui: Ui;
@@ -26,8 +26,6 @@ export class MainScene extends Phaser.Scene {
     private foregroundLayerName = 'foreground';
     private lightLayerName = 'light';
     private tilemap!: Phaser.Tilemaps.Tilemap;
-
-    private level!: Level;
 
     public width!: number;
     public height!: number;
@@ -44,9 +42,9 @@ export class MainScene extends Phaser.Scene {
     };
 
     private teams: Team[] = [];
-    public lightMap!: LightMap;
+    public lightMap!: LightMap | LightMapWall;
+    public lightMapWall!: LightMapWall;
     public collisionMap!: CollisionMap;
-    private controls!: Phaser.Cameras.Controls.FixedKeyControl;
 
     private paused = false;
 
@@ -90,7 +88,6 @@ export class MainScene extends Phaser.Scene {
             }
 
         });
-        this.cameras.main.setBackgroundColor('#66ff66');
 
         this.tilemap = this.add.tilemap(this.backgroundLayerName);
         const backgroundTileset = this.tilemap.addTilesetImage(this.spaceStationTilesetName, this.spaceStationTilesetName);
@@ -106,29 +103,21 @@ export class MainScene extends Phaser.Scene {
         const shadowLayer = this.tilemap.createDynamicLayer('shadow', lightTileset, 0, 0);
         shadowLayer.depth = Depth.SHADOW;
 
+        this.cameras.main.setBackgroundColor('#66ff66');
+        this.cameras.main.setBounds(0, 0, this.tilemap.widthInPixels, this.tilemap.heightInPixels);
+
         this.debug = new Debug(this);
 
         this.width = this.tilemap.width;
         this.height = this.tilemap.height;
-        this.lightMap = new LightMap(this, this.tilemap, lightLayer, shadowLayer);
+        // this.lightMap = new LightMap(this, this.tilemap, lightLayer, shadowLayer);
+        this.lightMap = new LightMapWall(this, this.tilemap, shadowLayer);
 
         this.collisionMap = new CollisionMap(this, this.tilemap);
 
         Actor.sceneCreate(this);
 
         this.loadObjects();
-
-        const camera = this.cameras.main;
-        camera.setBounds(0, 0, this.tilemap.widthInPixels, this.tilemap.heightInPixels);
-        const cursors = this.input.keyboard.createCursorKeys();
-        this.controls = new Phaser.Cameras.Controls.FixedKeyControl({
-            camera,
-            left: cursors.left,
-            right: cursors.right,
-            up: cursors.up,
-            down: cursors.down,
-            speed: 2,
-        });
     }
 
     public update(time: number, delta: number): void {
@@ -136,8 +125,6 @@ export class MainScene extends Phaser.Scene {
             return;
         }
 
-        // Camera
-        this.controls.update(delta);
         this.frame++;
         this.uiDebug.updateMouse(this.input.activePointer.worldX, this.input.activePointer.worldY);
 

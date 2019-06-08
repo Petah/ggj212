@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.4" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="64" tileheight="64" infinite="0" backgroundcolor="#000000" nextlayerid="8" nextobjectid="75">
+<map version="1.2" tiledversion="1.2.4" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="64" tileheight="64" infinite="0" backgroundcolor="#000000" nextlayerid="9" nextobjectid="86">
  <tileset firstgid="1" source="space-station.tsx"/>
  <tileset firstgid="443" source="light.tsx"/>
- <layer id="1" name="background" width="50" height="50">
+ <layer id="1" name="background" width="50" height="50" locked="1">
   <data encoding="csv">
 1,2,3,4,5,6,7,8,9,10,11,12,0,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,
 14,15,16,17,18,19,20,21,22,23,24,25,0,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,193,
@@ -110,7 +110,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,390,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <layer id="2" name="light" width="50" height="50" visible="0">
+ <layer id="2" name="light" width="50" height="50" visible="0" locked="1">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,443,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,443,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -164,7 +164,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,443,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <layer id="7" name="shadow" width="50" height="50">
+ <layer id="7" name="shadow" width="50" height="50" visible="0" locked="1">
   <data encoding="csv">
 444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,
 444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,
@@ -218,7 +218,7 @@
 444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444,444
 </data>
  </layer>
- <objectgroup color="#aa0000" id="4" name="collision">
+ <objectgroup color="#aa0000" id="4" name="collision" visible="0">
   <object id="42" x="0" y="192" width="64" height="640"/>
   <object id="44" x="768" y="0" width="64" height="512"/>
   <object id="50" x="64" y="192" width="704" height="64"/>
@@ -259,7 +259,42 @@
    <polygon points="0,0 -64,-64 -64,-256 0,-320"/>
   </object>
  </objectgroup>
- <objectgroup id="3" name="spawns" visible="0">
+ <objectgroup id="8" name="light-wall">
+  <object id="75" x="368" y="736">
+   <polyline points="0,0 -80,0 -80,-256 240,-256 240,0 96,0"/>
+  </object>
+  <object id="76" x="800" y="496">
+   <polyline points="0,0 0,-496"/>
+  </object>
+  <object id="77" x="800" y="160">
+   <polyline points="0,0 -768,0 -768,656"/>
+  </object>
+  <object id="78" x="32" y="976">
+   <polyline points="0,0 0,480"/>
+  </object>
+  <object id="79" x="224" y="1360">
+   <polyline points="0,0 0,80 384,80 384,-304 0,-304 0,-160"/>
+  </object>
+  <object id="80" x="32" y="1616">
+   <polyline points="0,0 0,336 832,336 832,1584"/>
+  </object>
+  <object id="81" x="800" y="1952">
+   <polyline points="0,0 0,-528"/>
+  </object>
+  <object id="82" x="800" y="1264">
+   <polyline points="0,0 0,-608"/>
+  </object>
+  <object id="83" x="32" y="816">
+   <polyline points="0,0 -32,0 -32,160 0,160"/>
+  </object>
+  <object id="84" x="32" y="1456">
+   <polyline points="0,0 -32,0 -32,160 0,160"/>
+  </object>
+  <object id="85" x="800" y="0">
+   <polyline points="0,0 2400,0 2400,3200 64,3200"/>
+  </object>
+ </objectgroup>
+ <objectgroup id="3" name="spawns" visible="0" locked="1">
   <object id="1" name="start" type="spawn-point" x="162" y="380">
    <point/>
   </object>
