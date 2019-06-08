@@ -1,8 +1,15 @@
 export const logSettings = {
+    verbose: false,
     debug: false,
     info: true,
     error: true,
 };
+
+export function logVerbose(...args: any) {
+    if (logSettings.verbose) {
+        console.log.apply(console, args);
+    }
+}
 
 export function logDebug(...args: any) {
     if (logSettings.debug) {

@@ -7,6 +7,8 @@
         "Tilemaps",
         "Tileset",
         "anims",
+        "collidable",
+        "collidables",
         "debugable",
         "debugables",
         "wsad"

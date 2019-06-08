@@ -15,6 +15,6 @@ export class Player {
     public update() {
         const input = this.controller.getInput();
         this.actor.direction = pointDirection(0, 0, input.xAxis, input.yAxis);
-        this.actor.speed = pointDistance(0, 0, input.xAxis, input.yAxis);
+        this.actor.speed = pointDistance(0, 0, input.xAxis, input.yAxis) * this.actor.maxSpeed;
     }
 }

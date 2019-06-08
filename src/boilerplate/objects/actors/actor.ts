@@ -1,5 +1,5 @@
 import { MainScene } from '../../scenes/main-scene';
-import { lengthDirX, lengthDirY } from '../../services/math/vector';
+import { lengthDirX, lengthDirY, pointDirection } from '../../services/math/vector';
 import { Entity } from '../entity';
 import { Light } from '../lighting/light';
 import { ICollidable } from '../collision/collision-map';
@@ -19,10 +19,10 @@ export class Actor extends Entity implements ICollidable, ILightable {
     private animationPlaying: boolean = false;
     private health: number = 100;
     private race: string = 'human';
-    private maxSpeed = 5;
     private light: Light;
-    public tint: number;
+    public tint: number = 0xffffff;
 
+    public maxSpeed = 5;
     public speed: number = 0;
     public direction: number = 0;
 
@@ -115,14 +115,14 @@ export class Actor extends Entity implements ICollidable, ILightable {
 
                 this.currentSprite = sprite;
                 this.currentSprite.sprite.visible = true;
+                this.scene.cameras.main.startFollow(this.currentSprite.sprite);
             }
             if (!this.animationPlaying) {
                 this.animationPlaying = true;
                 this.currentSprite.sprite.anims.play(this.currentSprite.animation);
             }
 
-            this.x += lengthDirX(this.maxSpeed * this.speed, this.direction);
-            this.y += lengthDirY(this.maxSpeed * this.speed, this.direction);
+            this.scene.collisionMap.move(this);
             this.currentSprite.sprite.x = this.x;
             this.currentSprite.sprite.y = this.y;
         } else {

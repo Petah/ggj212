@@ -14,6 +14,7 @@ import { WidgetDebug } from '../ui/types/debug';
 import { LocalStorage } from '../services/local-storage';
 import { CollisionMap } from '../objects/collision/collision-map';
 import { TimerAverage } from '../services/timer-average';
+import { Depth } from '../services/depth';
 
 export class MainScene extends Phaser.Scene {
     private ui: Ui;
@@ -44,7 +45,7 @@ export class MainScene extends Phaser.Scene {
 
     private teams: Team[] = [];
     public lightMap!: LightMap;
-    private collisionMap!: CollisionMap;
+    public collisionMap!: CollisionMap;
     private controls!: Phaser.Cameras.Controls.FixedKeyControl;
 
     private paused = false;
@@ -98,7 +99,7 @@ export class MainScene extends Phaser.Scene {
         const backgroundLayer = this.tilemap.createDynamicLayer(this.backgroundLayerName, backgroundTileset, 0, 0);
         const foregroundTileset = this.tilemap.addTilesetImage(this.spaceStationTilesetName, this.spaceStationTilesetName);
         const foregroundLayer = this.tilemap.createDynamicLayer(this.foregroundLayerName, foregroundTileset, 0, 0);
-        foregroundLayer.depth = 100;
+        foregroundLayer.depth = Depth.FOREGROUND;
         // const lightTileset = this.tilemap.addTilesetImage(this.lightTilesetName, this.lightTilesetName);
         // const lightLayer = this.tilemap.createStaticLayer(this.lightLayerName, lightTileset, 0, 0);
 

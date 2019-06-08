@@ -1,4 +1,4 @@
-import { logDebug } from '../../services/log';
+import { logDebug, logVerbose } from '../../services/log';
 import { Debug, IDebuggable } from '../debug-draw';
 import { LightStatic } from './light-static';
 import { matrixDebug } from '../../services/math/matrix';
@@ -50,7 +50,7 @@ export class LightMap implements IDebuggable {
         this.matrixStatic = this.updateLightMap(this.staticLights, 2);
         this.applyMatrixToTiles(this.matrixStatic);
         logDebug('Processed static lights', timer.stop());
-        logDebug(matrixDebug(this.matrixStatic, 2));
+        logVerbose(matrixDebug(this.matrixStatic, 2));
     }
 
     private updateLightMap(lights: ILight[], directionStep: number): math.Matrix {

@@ -1,5 +1,6 @@
 import { MainScene } from '../scenes/main-scene';
 import { logDebug } from '../services/log';
+import { Depth } from '../services/depth';
 
 export interface IDebuggable {
     debug(debug: Debug): void;
@@ -16,6 +17,7 @@ export class Debug {
     ) {
         scene.step.debug.add(this.update.bind(this));
         this.graphics = scene.add.graphics();
+        this.graphics.depth = Depth.DEBUG;
     }
 
     public update() {

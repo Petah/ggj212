@@ -1,10 +1,9 @@
 <template id="widget-debug">
     <div>
-        <div>mouseX: {{ mouseX }}</div>
-        <div>mouseY: {{ mouseY }}</div>
+        <div>mouse: {{ mouseX | int }} {{ mouseY | int }}</div>
+        <div>camera: {{ scene.cameras ? scene.cameras.main.x : NaN }} {{ scene.cameras ? scene.cameras.main.y : NaN }}</div>
         <div>paused: <input type="checkbox" v-model="scene.paused" /> {{ scene.paused }}</div>
         <div>debug: <input type="checkbox" v-model="scene.debugEnabled" /> {{ scene.debugEnabled }}</div>
-        <div>collision: {{ collision ? 'true' : 'false' }}</div>
         <div>frame: {{ scene.frame }}</div>
         <div>
             timers:
@@ -25,6 +24,11 @@ export default {
             collision: false,
         };
     },
+    filters: {
+        int: (n) => {
+            return Math.round(n);
+        },
+    },
     watch: {
         'scene.debugEnabled': function (value) {
             this.scene.storage.set('debug', value);
@@ -39,9 +43,6 @@ export default {
             this.mouseX = mouseX;
             this.mouseY = mouseY;
         },
-        updateCollision(collision) {
-            this.collision = collision;
-        }
     },
 };
 </script>

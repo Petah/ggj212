@@ -1,21 +1,22 @@
 import { MainScene } from '../../scenes/main-scene';
 import { IDebuggable, Debug } from '../debug-draw';
-
-declare interface IPolygon {
-    x: number;
-    y: number;
-}
+import { lengthDirY, lengthDirX } from '../../services/math/vector';
 
 export interface ICollidable {
-    speed: number;
     x: number;
     y: number;
+    speed: number;
+    direction: number;
     collisionPolygons: Array<Array<{ x: number, y: number }>>;
 }
 
 export class CollisionMap implements IDebuggable {
     private collidables: ICollidable[] = [];
     private polygons: SAT.Polygon[] = [];
+    private features = {
+        bounce: 0,
+        friction: 0,
+    };
 
     public constructor(
         private scene: MainScene,
@@ -23,7 +24,40 @@ export class CollisionMap implements IDebuggable {
     ) {
         scene.step.debug.add(this.debug.bind(this));
         scene.step.collision.add(this.handleCollisions.bind(this));
+        scene.step.collision.add(this.handleCollisions.bind(this));
         this.loadCollisions();
+    }
+
+    public move(collidable: ICollidable) {
+        collidable.x += lengthDirX(collidable.speed, collidable.direction);
+        collidable.y += lengthDirY(collidable.speed, collidable.direction);
+
+        const collisions = [];
+
+        // @todo Use a quad tree or some broad phase of collision detection so that you don't have to test against everything
+        for (const tileMapPolygon of this.polygons) {
+            for (const polygon of this.getCollidablePolygons(collidable)) {
+                const response = new SAT.Response();
+                const collision = SAT.testPolygonPolygon(
+                    polygon,
+                    tileMapPolygon,
+                    response,
+                );
+
+                if (collision) {
+                    const overlap = response.overlapV;
+                    collisions.push(overlap);
+                    collidable.x -= overlap.x;
+                    collidable.y -= overlap.y;
+                    polygon.pos.x = collidable.x;
+                    polygon.pos.y = collidable.y;
+
+                    // Used to draw debug
+                    tileMapPolygon.collision = true;
+                    polygon.collision = true;
+                }
+            }
+        }
     }
 
     private loadCollisions() {
@@ -56,7 +90,6 @@ export class CollisionMap implements IDebuggable {
     }
 
     public handleCollisions() {
-        // @Todo
     }
 
     public addCollidable(entity: ICollidable) {
@@ -84,24 +117,13 @@ export class CollisionMap implements IDebuggable {
 
     public debug(debug: Debug) {
         for (const tileMapPolygon of this.polygons) {
-            debug.drawPolygon(this.satPolygonToWorldPosition(tileMapPolygon), 0x0000ff);
+            debug.drawPolygon(this.satPolygonToWorldPosition(tileMapPolygon), tileMapPolygon.collision ? 0xff0000 : 0x0000ff);
+            tileMapPolygon.collision = false;
             for (const collidable of this.collidables) {
                 const polygons = this.getCollidablePolygons(collidable);
                 for (const polygon of polygons) {
-                    // debug.drawPolygon(this.satPolygonToWorldPosition(polygon), 0x00ff00);
-                    const response = new SAT.Response();
-                    const collision = SAT.testPolygonPolygon(
-                        polygon,
-                        tileMapPolygon,
-                        response,
-                    );
-
-                    if (collision) {
-                        debug.drawPolygon(this.satPolygonToWorldPosition(tileMapPolygon));
-                        debug.drawPolygon(this.satPolygonToWorldPosition(polygon));
-                    }
-
-                    this.scene.uiDebug.updateCollision(collision);
+                    debug.drawPolygon(this.satPolygonToWorldPosition(polygon), polygon.collision ? 0xff0000 : 0x00ff00);
+                    polygon.collision = false;
                 }
             }
         }
