@@ -1,31 +1,25 @@
 import { MainScene } from '../scenes/main-scene';
-import { logDebug } from '../services/debug';
+import { logDebug } from '../services/log';
+
+export interface IDebuggable {
+    debug(debug: Debug): void;
+}
 
 export class Debug {
-    private debugables: IDebuggable[] = [];
     private graphics: Phaser.GameObjects.Graphics;
-    private text: Phaser.GameObjects.Text[] = [];
-    private frame: number = 0;
     private samples: number = 0;
     private textPoolCount = 0;
     private textPool: Phaser.GameObjects.Text[] = [];
-    private const updateEveryFrames = 1;
 
     constructor(
         private scene: MainScene,
     ) {
+        scene.step.debug.add(this.update.bind(this));
         this.graphics = scene.add.graphics();
     }
 
     public update() {
-        this.frame++;
-        if (this.frame % this.updateEveryFrames !== 0) {
-            return;
-        }
         this.clear();
-        for (const debugable of this.debugables) {
-            debugable.debug(this);
-        }
     }
 
     public drawCircle(x: number, y: number, radius: number, color: number = 0xff0000) {
@@ -59,23 +53,15 @@ export class Debug {
         }
     }
 
-    public add(debugable: IDebuggable) {
-        this.debugables.push(debugable);
-    }
-
     public sample(...args: any) {
         if (this.samples++ % 60 === 0) {
             logDebug(...args);
         }
     }
 
-    private clear() {
+    public clear() {
         this.graphics.clear();
         this.graphics.lineStyle(3, 0xff0000, 0.8);
         this.textPoolCount = 0;
     }
-}
-
-export interface IDebuggable {
-    debug(debug: Debug): void;
 }

@@ -3,13 +3,14 @@ import { lengthDirX, lengthDirY } from '../../services/math/vector';
 import { Entity } from '../entity';
 import { Light } from '../lighting/light';
 import { ICollidable } from '../collision/collision-map';
+import { ILightable } from '../lighting/light-map';
 
 declare interface ActorSprite {
     sprite: Phaser.GameObjects.Sprite;
     animation: string;
 }
 
-export class Actor extends Entity implements ICollidable {
+export class Actor extends Entity implements ICollidable, ILightable {
     private frontSprite: ActorSprite;
     private backSprite: ActorSprite;
     private leftSprite: ActorSprite;
@@ -20,6 +21,7 @@ export class Actor extends Entity implements ICollidable {
     private race: string = 'human';
     private maxSpeed = 5;
     private light: Light;
+    public tint: number;
 
     public speed: number = 0;
     public direction: number = 0;
@@ -32,6 +34,7 @@ export class Actor extends Entity implements ICollidable {
         super(scene, 'actor');
         // @todo need to remove events on destroy
         scene.step.update.add(this.update.bind(this));
+        scene.lightMap.addLightable(this);
         this.frontSprite = this.loadSprite('front_strip2');
         this.backSprite = this.loadSprite('back_strip2');
         this.leftSprite = this.loadSprite('left_strip4');
@@ -129,11 +132,12 @@ export class Actor extends Entity implements ICollidable {
             }
         }
 
+        this.currentSprite.sprite.tint = this.tint;
         this.light.x = this.x;
         this.light.y = this.y;
     }
 
-    get collisionPolygons() {
+    public get collisionPolygons() {
         const width = this.currentSprite.sprite.width / 2;
         const height = this.currentSprite.sprite.height / 2;
         return [

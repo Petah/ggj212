@@ -3,7 +3,7 @@ import { Team } from '../objects/player/team';
 import { LightMap } from '../objects/lighting/light-map';
 import { Level } from './level';
 import { Debug } from '../objects/debug-draw';
-import { logDebug, logSettings } from '../services/debug';
+import { logDebug, logSettings } from '../services/log';
 import { LightStatic } from '../objects/lighting/light-static';
 import { SpawnPoint } from '../objects/spawn-point';
 import { Actor } from '../objects/actors/actor';
@@ -13,16 +13,18 @@ import { Wsad } from '../objects/player/controller/wsad';
 import { WidgetDebug } from '../ui/types/debug';
 import { LocalStorage } from '../services/local-storage';
 import { CollisionMap } from '../objects/collision/collision-map';
-import { Timer } from '../services/timer';
+import { TimerAverage } from '../services/timer-average';
 
 export class MainScene extends Phaser.Scene {
     private ui: Ui;
     public uiDebug: WidgetDebug;
 
-    private backgroundTilesetName = 'space-station';
+    private spaceStationTilesetName = 'space-station';
     private lightTilesetName = 'light';
     private backgroundLayerName = 'background';
+    private foregroundLayerName = 'foreground';
     private lightLayerName = 'light';
+    private tilemap!: Phaser.Tilemaps.Tilemap;
 
     private level!: Level;
 
@@ -32,12 +34,12 @@ export class MainScene extends Phaser.Scene {
     public debug!: Debug;
     public debugEnabled: boolean = false;
 
-    private frame = 0;
+    public frame = 0;
     private timers = {
-        update: new Timer(),
-        debug: new Timer(),
-        input: new Timer(),
-        collision: new Timer(),
+        update: new TimerAverage(),
+        debug: new TimerAverage(),
+        input: new TimerAverage(),
+        collision: new TimerAverage(),
     };
 
     private teams: Team[] = [];
@@ -45,13 +47,13 @@ export class MainScene extends Phaser.Scene {
     private collisionMap!: CollisionMap;
     private controls!: Phaser.Cameras.Controls.FixedKeyControl;
 
-    private tilemap!: Phaser.Tilemaps.Tilemap;
-    private backgroundTileset!: Phaser.Tilemaps.Tileset;
-    private backgroundLayer!: Phaser.Tilemaps.DynamicTilemapLayer;
+    private paused = false;
 
     public step = {
-        input: new EventGroup<() => void>(),
-        update: new EventGroup<(time: number, delta: number) => void>(),
+        input: new EventGroup<() => void>(this, this.timers.input),
+        update: new EventGroup<(time: number, delta: number) => void>(this, this.timers.update),
+        debug: new EventGroup<(debug: Debug) => void>(this, this.timers.debug),
+        collision: new EventGroup<(time: number, delta: number) => void>(this, this.timers.collision),
     };
     public storage: LocalStorage;
 
@@ -71,7 +73,7 @@ export class MainScene extends Phaser.Scene {
     }
 
     public preload(): void {
-        this.load.image(this.backgroundTilesetName, './assets/space-station.png');
+        this.load.image(this.spaceStationTilesetName, './assets/space-station.png');
         this.load.image(this.lightTilesetName, './assets/light.png');
         this.load.tilemapTiledJSON(this.backgroundLayerName, './tilemaps/space-station.json');
         this.load.image('lamp', './assets/lamp.png');
@@ -82,17 +84,29 @@ export class MainScene extends Phaser.Scene {
     public create(): void {
         logDebug('Scene create');
 
+        this.input.keyboard.on('keyup', (event: KeyboardEvent) => {
+            if (event.keyCode === Phaser.Input.Keyboard.KeyCodes.PAUSE) {
+                this.paused = !this.paused;
+            }
+
+        });
+        this.cameras.main.setBackgroundColor('#66ff66')
+
+
         this.tilemap = this.add.tilemap(this.backgroundLayerName);
-        const backgroundTileset = this.tilemap.addTilesetImage(this.backgroundTilesetName, this.backgroundTilesetName);
+        const backgroundTileset = this.tilemap.addTilesetImage(this.spaceStationTilesetName, this.spaceStationTilesetName);
         const backgroundLayer = this.tilemap.createDynamicLayer(this.backgroundLayerName, backgroundTileset, 0, 0);
-        const lightTileset = this.tilemap.addTilesetImage(this.lightTilesetName, this.lightTilesetName);
-        const lightLayer = this.tilemap.createStaticLayer(this.lightLayerName, lightTileset, 0, 0);
+        const foregroundTileset = this.tilemap.addTilesetImage(this.spaceStationTilesetName, this.spaceStationTilesetName);
+        const foregroundLayer = this.tilemap.createDynamicLayer(this.foregroundLayerName, foregroundTileset, 0, 0);
+        foregroundLayer.depth = 100;
+        // const lightTileset = this.tilemap.addTilesetImage(this.lightTilesetName, this.lightTilesetName);
+        // const lightLayer = this.tilemap.createStaticLayer(this.lightLayerName, lightTileset, 0, 0);
 
         this.debug = new Debug(this);
 
         this.width = this.tilemap.width;
         this.height = this.tilemap.height;
-        this.lightMap = new LightMap(this, this.tilemap);
+        this.lightMap = new LightMap(this, this.tilemap, backgroundLayer, foregroundLayer);
 
         this.collisionMap = new CollisionMap(this, this.tilemap);
 
@@ -114,26 +128,21 @@ export class MainScene extends Phaser.Scene {
     }
 
     public update(time: number, delta: number): void {
+        if (this.paused) {
+            return;
+        }
+
         // Camera
         this.controls.update(delta);
         this.frame++;
-
-        if (this.frame % 10 == 0) this.timers.debug.start();
         this.uiDebug.updateMouse(this.input.activePointer.worldX, this.input.activePointer.worldY);
-        this.debug.update();
-        if (this.frame % 10 == 0) this.timers.debug.stop();
 
-        if (this.frame % 10 == 0) this.timers.input.start();
         this.step.input.call();
-        if (this.frame % 10 == 0) this.timers.input.stop();
-
-        if (this.frame % 10 == 0) this.timers.update.start();
         this.step.update.call();
-        if (this.frame % 10 == 0) this.timers.update.stop();
-
-        if (this.frame % 10 == 0) this.timers.collision.start();
-        this.collisionMap.handleCollisions();
-        if (this.frame % 10 == 0) this.timers.collision.stop();
+        this.step.collision.call();
+        if (this.debugEnabled) {
+            this.step.debug.call(this.debug);
+        }
     }
 
     private loadObjects() {

@@ -1,4 +1,4 @@
-import { logDebug } from '../../services/debug';
+import { logDebug } from '../../services/log';
 import { Debug, IDebuggable } from '../debug-draw';
 import { LightStatic } from './light-static';
 import { matrixDebug } from '../../services/math/matrix';
@@ -13,19 +13,28 @@ declare type ILight = {
     range: number;
 };
 
+export interface ILightable {
+    x: number;
+    y: number;
+    tint: number;
+}
+
 export class LightMap implements IDebuggable {
 
     private matrixStatic: math.Matrix;
     private matrixDynamic: math.Matrix;
     private staticLights: ILight[] = [];
     private lights: ILight[] = [];
+    private lightables: ILightable[] = [];
 
     public constructor(
         private scene: MainScene,
         private tilemap: Phaser.Tilemaps.Tilemap,
+        private backgroundLayer: Phaser.Tilemaps.DynamicTilemapLayer,
+        private foregroundLayer: Phaser.Tilemaps.DynamicTilemapLayer,
     ) {
         scene.step.update.add(this.update.bind(this));
-        scene.debug.add(this);
+        scene.step.debug.add(this.debug.bind(this));
         this.matrixStatic = math.zeros(1, 1) as math.Matrix;
         this.matrixDynamic = math.zeros(this.height, this.width) as math.Matrix;
         logDebug('Light map', this.height, this.width, this.tilemap.tileWidth + 'x' + this.tilemap.tileHeight);
@@ -85,8 +94,23 @@ export class LightMap implements IDebuggable {
         // @todo cull tiles outside of camera view
         for (let y = 0; y < this.height; y++) {
             for (let x = 0; x < this.width; x++) {
-                this.tilemap.layers[0].data[y][x].alpha = matrix.get([y, x]);
+                // this.backgroundLayer.layer.data[y][x].alpha = matrix.get([y, x]);
+                // this.foregroundLayer.layer.data[y][x].alpha = matrix.get([y, x]);
+                let color = 0xff * matrix.get([y, x]);
+                color = (color | (color << 8) | (color << 16))
+                this.backgroundLayer.layer.data[y][x].tint = color;
+                this.foregroundLayer.layer.data[y][x].tint = color;
             }
+        }
+    }
+
+    private applyLightToObjects(matrix: math.Matrix) {
+        for (const lightable of this.lightables) {
+            const x = Math.floor(lightable.x / this.tileSize);
+            const y = Math.floor(lightable.y / this.tileSize);
+            let color = 0xff * matrix.get([y, x]);
+            color = (color | (color << 8) | (color << 16))
+            lightable.tint = color;
         }
     }
 
@@ -114,7 +138,7 @@ export class LightMap implements IDebuggable {
         //     }
         // }
     }
-//https://github.com/Silverwolf90/2d-visibility
+    //https://github.com/Silverwolf90/2d-visibility
     private castRay(x: number, y: number, direction: number, range: number, step: number, matrix: math.Matrix): math.Matrix {
         let currentX = x;
         let currentY = y;
@@ -152,10 +176,15 @@ export class LightMap implements IDebuggable {
         //     }
         // }
         // this.applyMatrixToTiles(matrix);
+        this.applyLightToObjects(this.matrixStatic);
     }
 
     public addLight(light: Light) {
         this.lights.push(light);
+    }
+
+    public addLightable(lightable: ILightable) {
+        this.lightables.push(lightable);
     }
 
     private get width(): number {

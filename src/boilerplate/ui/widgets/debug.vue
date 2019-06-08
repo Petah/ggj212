@@ -2,18 +2,19 @@
     <div>
         <div>mouseX: {{ mouseX }}</div>
         <div>mouseY: {{ mouseY }}</div>
+        <div>paused: <input type="checkbox" v-model="scene.paused" /> {{ scene.paused }}</div>
         <div>debug: <input type="checkbox" v-model="scene.debugEnabled" /> {{ scene.debugEnabled }}</div>
         <div>collision: {{ collision ? 'true' : 'false' }}</div>
         <div>frame: {{ scene.frame }}</div>
         <div>
             timers:
-            <div v-for="(timer, name) in scene.timers" :key="name">{{ name }}: {{ timer.time.toFixed(4) }}</div>
+            <div v-for="(timer, name) in scene.timers" :key="name">{{ name }}: {{ timer.average.toFixed(6) }}</div>
         </div>
     </div>
 </template>
 
 <script type="ts">
-import { logSettings } from '../../services/debug';
+import { logSettings } from '../../services/log';
 export default {
     name: 'WidgetDebug',
     data() {
@@ -28,6 +29,9 @@ export default {
         'scene.debugEnabled': function (value) {
             this.scene.storage.set('debug', value);
             logSettings.debug = value;
+            if (this.scene.debug) {
+                this.scene.debug.clear();
+            }
         },
     },
     methods: {

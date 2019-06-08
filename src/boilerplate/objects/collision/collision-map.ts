@@ -21,8 +21,9 @@ export class CollisionMap implements IDebuggable {
         private scene: MainScene,
         private tilemap: Phaser.Tilemaps.Tilemap,
     ) {
+        scene.step.debug.add(this.debug.bind(this));
+        scene.step.collision.add(this.handleCollisions.bind(this));
         this.loadCollisions();
-        scene.debug.add(this);
     }
 
     private loadCollisions() {
