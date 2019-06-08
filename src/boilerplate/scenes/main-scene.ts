@@ -100,14 +100,19 @@ export class MainScene extends Phaser.Scene {
         const foregroundTileset = this.tilemap.addTilesetImage(this.spaceStationTilesetName, this.spaceStationTilesetName);
         const foregroundLayer = this.tilemap.createDynamicLayer(this.foregroundLayerName, foregroundTileset, 0, 0);
         foregroundLayer.depth = Depth.FOREGROUND;
-        // const lightTileset = this.tilemap.addTilesetImage(this.lightTilesetName, this.lightTilesetName);
-        // const lightLayer = this.tilemap.createStaticLayer(this.lightLayerName, lightTileset, 0, 0);
+
+        const lightTileset = this.tilemap.addTilesetImage(this.lightTilesetName, this.lightTilesetName);
+        const lightLayer = this.tilemap.createStaticLayer('light', lightTileset, 0, 0);
+        lightLayer.depth = Depth.DEBUG;
+        lightLayer.visible = false;
+        const shadowLayer = this.tilemap.createDynamicLayer('shadow', lightTileset, 0, 0);
+        shadowLayer.depth = Depth.SHADOW;
 
         this.debug = new Debug(this);
 
         this.width = this.tilemap.width;
         this.height = this.tilemap.height;
-        this.lightMap = new LightMap(this, this.tilemap, backgroundLayer, foregroundLayer);
+        this.lightMap = new LightMap(this, this.tilemap, lightLayer, shadowLayer);
 
         this.collisionMap = new CollisionMap(this, this.tilemap);
 

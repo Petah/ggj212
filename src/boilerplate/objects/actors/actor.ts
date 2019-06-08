@@ -34,7 +34,6 @@ export class Actor extends Entity implements ICollidable, ILightable {
         super(scene, 'actor');
         // @todo need to remove events on destroy
         scene.step.update.add(this.update.bind(this));
-        scene.lightMap.addLightable(this);
         this.frontSprite = this.loadSprite('front_strip2');
         this.backSprite = this.loadSprite('back_strip2');
         this.leftSprite = this.loadSprite('left_strip4');
@@ -138,14 +137,14 @@ export class Actor extends Entity implements ICollidable, ILightable {
     }
 
     public get collisionPolygons() {
-        const width = this.currentSprite.sprite.width / 2;
-        const height = this.currentSprite.sprite.height / 2;
+        const width = this.currentSprite.sprite.width / 3;
+        const height = this.currentSprite.sprite.height / 6 ;
         return [
             [
-                { x: -width, y: -height },
-                { x: width, y: -height },
-                { x: width, y: height },
-                { x: -width, y: height },
+                { x: -width, y: -height + 10 },
+                { x: width, y: -height + 10 },
+                { x: width, y: height + 10 },
+                { x: -width, y: height + 10 },
             ],
         ];
     }

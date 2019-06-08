@@ -25,13 +25,12 @@ export class LightMap implements IDebuggable {
     private matrixDynamic: math.Matrix;
     private staticLights: ILight[] = [];
     private lights: ILight[] = [];
-    private lightables: ILightable[] = [];
 
     public constructor(
         private scene: MainScene,
         private tilemap: Phaser.Tilemaps.Tilemap,
-        private backgroundLayer: Phaser.Tilemaps.DynamicTilemapLayer,
-        private foregroundLayer: Phaser.Tilemaps.DynamicTilemapLayer,
+        private blockedLayer: Phaser.Tilemaps.StaticTilemapLayer,
+        private shadowLayer: Phaser.Tilemaps.DynamicTilemapLayer,
     ) {
         scene.step.update.add(this.update.bind(this));
         scene.step.debug.add(this.debug.bind(this));
@@ -94,23 +93,8 @@ export class LightMap implements IDebuggable {
         // @todo cull tiles outside of camera view
         for (let y = 0; y < this.height; y++) {
             for (let x = 0; x < this.width; x++) {
-                // this.backgroundLayer.layer.data[y][x].alpha = matrix.get([y, x]);
-                // this.foregroundLayer.layer.data[y][x].alpha = matrix.get([y, x]);
-                let color = 0xff * matrix.get([y, x]);
-                color = (color | (color << 8) | (color << 16))
-                this.backgroundLayer.layer.data[y][x].tint = color;
-                this.foregroundLayer.layer.data[y][x].tint = color;
+                this.shadowLayer.layer.data[y][x].alpha = 1 - matrix.get([y, x]);
             }
-        }
-    }
-
-    private applyLightToObjects(matrix: math.Matrix) {
-        for (const lightable of this.lightables) {
-            const x = Math.floor(lightable.x / this.tileSize);
-            const y = Math.floor(lightable.y / this.tileSize);
-            let color = 0xff * matrix.get([y, x]);
-            color = (color | (color << 8) | (color << 16))
-            lightable.tint = color;
         }
     }
 
@@ -146,7 +130,7 @@ export class LightMap implements IDebuggable {
         do {
             const currentRoundedX = Math.round(currentX / this.tileSize);
             const currentRoundedY = Math.round(currentY / this.tileSize);
-            const isBlocked = this.tilemap.layers[1].data[currentRoundedY][currentRoundedX].index !== -1;
+            const isBlocked = this.blockedLayer.layer.data[currentRoundedY][currentRoundedX].index !== -1;
             if (isBlocked) {
                 break;
             }
@@ -176,15 +160,11 @@ export class LightMap implements IDebuggable {
         //     }
         // }
         // this.applyMatrixToTiles(matrix);
-        this.applyLightToObjects(this.matrixStatic);
+        // this.applyLightToObjects(this.matrixStatic);
     }
 
     public addLight(light: Light) {
         this.lights.push(light);
-    }
-
-    public addLightable(lightable: ILightable) {
-        this.lightables.push(lightable);
     }
 
     private get width(): number {
