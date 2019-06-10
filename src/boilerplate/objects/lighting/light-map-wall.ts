@@ -52,7 +52,6 @@ export class LightMapWall implements IDebuggable {
             tile.alpha = 1;
         }
 
-        // const lightSource = new Point(this.lights[0].x, this.lights[0].y);
         for (const light of this.lights) {
             // @todo cull lights that are way off the camera view
             const endpoints = loadMap(this.walls, light);
@@ -135,17 +134,23 @@ export class LightMapWall implements IDebuggable {
 
     public debug(debug: Debug) {
         for (const segment of this.walls) {
-            // debug.drawLine(segment.p1.x, segment.p1.y, segment.p2.x, segment.p2.y, 0xffff00);
+            debug.drawLine(segment.p1.x, segment.p1.y, segment.p2.x, segment.p2.y, 0xffff00);
         }
         for (const light of this.lights) {
-            debug.drawCircle(light.x, light.y, 5, 0xffff00);
+            debug.drawCircle(light.x, light.y, 7, 0xffff00, 0.5, 2);
         }
 
-        const lightSource = new Point(this.lights[0].x, this.lights[0].y);
-        for (const points of this.visibility) {
-            debug.drawLine(lightSource.x, lightSource.y, points[0].x, points[0].y, 0xffff00, 0.3);
-            debug.drawLine(lightSource.x, lightSource.y, points[1].x, points[1].y, 0xffff00, 0.3);
-            debug.drawLine(points[0].x, points[0].y, points[1].x, points[1].y, 0xffff00, 0.3);
+        for (const light of this.lights) {
+            // @todo cull lights that are way off the camera view
+            const endpoints = loadMap(this.walls, light);
+            this.visibility = calculateVisibility(light, endpoints);
+            for (const points of this.visibility) {
+                const point0Extended = this.extendAngle(points[0], light);
+                const point1Extended = this.extendAngle(points[1], light);
+                debug.drawLine(light.x, light.y, point0Extended.x, point0Extended.y, 0xffff00, 0.3, 1);
+                debug.drawLine(light.x, light.y, point1Extended.x, point1Extended.y, 0xffff00, 0.3, 1);
+                debug.drawLine(point0Extended.x, point0Extended.y, point1Extended.x, point1Extended.y, 0xffff00, 0.3, 1);
+            }
         }
     }
 
