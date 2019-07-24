@@ -1,6 +1,6 @@
-import { MainScene } from '../scenes/main-scene';
 import { logDebug } from '../services/log';
 import { Depth } from '../services/depth';
+import { IScene } from '../scenes/scene-interface';
 
 export interface IDebuggable {
     debug(debug: Debug): void;
@@ -13,7 +13,7 @@ export class Debug {
     private textPool: Phaser.GameObjects.Text[] = [];
 
     constructor(
-        private scene: MainScene,
+        private scene: IScene,
     ) {
         scene.step.debug.add(this.update.bind(this));
         this.graphics = scene.add.graphics();
@@ -22,6 +22,22 @@ export class Debug {
 
     public update() {
         this.clear();
+        this.drawGrid();
+    }
+
+    public drawGrid() {
+        const gridSize = 100;
+        const camera = this.scene.cameras.main;
+        const cameraX = Math.floor(camera.worldView.x / gridSize) * gridSize;
+        const cameraY = Math.floor(camera.worldView.y / gridSize) * gridSize;
+        const cameraWidth = camera.width + gridSize;
+        const cameraHeight = camera.height + gridSize;
+        for (let x = cameraX; x < cameraX + cameraWidth; x += gridSize) {
+            this.drawLine(x, cameraY, x, cameraY + cameraHeight, 0xffffff, 0.3, 1);
+        }
+        for (let y = cameraY; y < cameraY + cameraHeight; y += gridSize) {
+            this.drawLine(cameraX, y, cameraX + cameraWidth, y, 0xffffff, 0.3, 1);
+        }
     }
 
     public drawCircle(x: number, y: number, radius: number, color: number = 0xff0000, alpha = 0.8, width = 3) {

@@ -31,7 +31,7 @@ export function logError(...args: any) {
     }
 }
 
-let sampleTimer = null;
+let sampleTimer: NodeJS.Timeout | null = null;
 export function logSample(...args: any) {
     if (logSettings.sample) {
         if (!sampleTimer) {

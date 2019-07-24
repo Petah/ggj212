@@ -4,6 +4,7 @@ import { Entity } from '../entity';
 import { Light } from '../lighting/light';
 import { ICollidable } from '../collision/collision-map';
 import { ILightable } from '../lighting/light-map';
+import { IScene } from '../../scenes/scene-interface';
 
 declare interface IActorSprite {
     sprite: Phaser.GameObjects.Sprite;
@@ -57,7 +58,7 @@ export class Actor implements ICollidable, ILightable {
         };
     }
 
-    public static scenePreload(scene: MainScene): void {
+    public static scenePreload(scene: IScene): void {
         scene.load.image('front', './assets/front.png');
         scene.load.spritesheet('left_strip4', './assets/left_strip4.png', { frameWidth: 50, frameHeight: 54 });
         scene.load.spritesheet('right_strip4', './assets/right_strip4.png', { frameWidth: 50, frameHeight: 54 });

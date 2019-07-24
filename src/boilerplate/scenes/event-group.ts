@@ -1,11 +1,11 @@
 import { Timer } from '../services/timer';
-import { MainScene } from './main-scene';
+import { IScene } from './scene-interface';
 
 export class EventGroup<T extends (...args: any) => void> {
     private callables: T[] = [];
 
     public constructor(
-        private scene: MainScene,
+        private scene: IScene,
         private timer: Timer,
     ) {
     }

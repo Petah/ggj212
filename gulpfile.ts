@@ -44,10 +44,10 @@ function copyCss() {
 
 function copyAssets() {
     return src([
-        'src/**/*.json',
-        'src/**/*.png',
+        'src/boilerplate/**/*.json',
+        'src/boilerplate/**/*.png',
     ])
-        .pipe(flatten({ includeParents: -1 }))
+        // .pipe(flatten({ includeParents: -2 }))
         .pipe(dest('dist'));
 }
 

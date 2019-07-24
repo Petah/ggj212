@@ -1,12 +1,13 @@
 import { IController } from './controller/controller';
-import { Actor } from '../actors/actor';
 import { pointDirection, pointDistance } from '../../services/math/vector';
 import { IScene } from '../../scenes/scene-interface';
+import { Ship } from '../actors/ship';
+import { logSample } from '../../services/log';
 
-export class Player {
+export class PlayerShip {
     constructor(
         private scene: IScene,
-        private actor: Actor,
+        private ship: Ship,
         private controller: IController,
     ) {
         scene.step.input.add(this.update.bind(this));
@@ -14,7 +15,9 @@ export class Player {
 
     public update() {
         const input = this.controller.getInput();
-        this.actor.direction = pointDirection(0, 0, input.xAxis, input.yAxis);
-        this.actor.speed = pointDistance(0, 0, input.xAxis, input.yAxis) * this.actor.maxSpeed;
+        if (input.xAxis || input.yAxis) {
+            this.ship.facing = pointDirection(0, 0, input.xAxis, input.yAxis);
+        }
+        this.ship.currentAcceleration = pointDistance(0, 0, input.xAxis, input.yAxis) * this.ship.maxSpeed;
     }
 }

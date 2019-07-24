@@ -1,5 +1,5 @@
-import { MainScene } from '../../../scenes/main-scene';
 import { IControllerInput } from './controller';
+import { IScene } from '../../../scenes/scene-interface';
 
 export class Wsad {
     private wsad: {
@@ -10,7 +10,7 @@ export class Wsad {
     };
 
     constructor(
-        protected scene: MainScene,
+        protected scene: IScene,
     ) {
         this.wsad = scene.input.keyboard.addKeys('W,S,A,D');
     }

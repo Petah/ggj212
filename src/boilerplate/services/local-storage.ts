@@ -14,7 +14,7 @@ export class LocalStorage {
         const storageKey = this.getKey(key);
         try {
             const item = localStorage.getItem(storageKey);
-            if (item === undefined) {
+            if (item === undefined || item === null) {
                 return defaultValue;
             }
             return JSON.parse(item);

@@ -15,8 +15,9 @@ import { CollisionMap } from '../objects/collision/collision-map';
 import { TimerAverage } from '../services/timer-average';
 import { Depth } from '../services/depth';
 import { LightMapWall } from '../objects/lighting/light-map-wall';
+import { IScene } from './scene-interface';
 
-export class MainScene extends Phaser.Scene {
+export class MainScene extends Phaser.Scene implements IScene {
     private ui: Ui;
     public uiDebug: WidgetDebug;
 
