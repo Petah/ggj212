@@ -13,3 +13,7 @@ export function motionAdd(entity: IMotionEntity, speed: number, direction: numbe
     entity.speed = Math.hypot(x2, y2);
     entity.direction = pointDirection(0, 0, x2, y2);
 }
+
+export function clamp(n: number, min: number, max: number): number {
+    return Math.min(max, Math.max(min, n));
+}

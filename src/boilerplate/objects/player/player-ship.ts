@@ -15,9 +15,10 @@ export class PlayerShip {
 
     public update() {
         const input = this.controller.getInput();
-        if (input.xAxis || input.yAxis) {
-            this.ship.facing = pointDirection(0, 0, input.xAxis, input.yAxis);
+        this.ship.facing += input.xAxis * this.ship.turnSpeed;
+        this.ship.currentAcceleration = 0;
+        if (input.yAxis < 0) {
+            this.ship.currentAcceleration = -input.yAxis * this.ship.accelerationSpeed;
         }
-        this.ship.currentAcceleration = pointDistance(0, 0, input.xAxis, input.yAxis) * this.ship.maxSpeed;
     }
 }
