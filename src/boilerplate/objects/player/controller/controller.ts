@@ -1,8 +1,5 @@
-export interface IControllerInput {
-    xAxis: number;
-    yAxis: number;
-}
+import { Input } from './input';
 
 export interface IController {
-    getInput(): IControllerInput;
+    processInput(input: Input): void;
 }

@@ -1,24 +1,21 @@
 import { IController } from './controller/controller';
-import { pointDirection, pointDistance } from '../../services/math/vector';
 import { IScene } from '../../scenes/scene-interface';
 import { Ship } from '../actors/ship';
-import { logSample } from '../../services/log';
+import { Input } from './controller/input';
 
 export class PlayerShip {
+    private input: Input;
+
     constructor(
         private scene: IScene,
         private ship: Ship,
         private controller: IController,
     ) {
         scene.step.input.add(this.update.bind(this));
+        this.input = this.ship.input;
     }
 
     public update() {
-        const input = this.controller.getInput();
-        this.ship.facing += input.xAxis * this.ship.turnSpeed;
-        this.ship.currentAcceleration = 0;
-        if (input.yAxis < 0) {
-            this.ship.currentAcceleration = -input.yAxis * this.ship.accelerationSpeed;
-        }
+        this.controller.processInput(this.input);
     }
 }

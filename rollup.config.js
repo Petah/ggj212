@@ -8,8 +8,12 @@ export default {
         format: 'umd',
         file: 'dist/bundle.js',
         name: 'test',
+        globals: {
+            'vue': 'Vue',
+            'vue-class-component': 'VueClassComponent',
+        },
     },
-    external: ['vue', 'phaser', 'math'],
+    external: ['vue', 'phaser', 'math', 'vue-class-component'],
     plugins: [
         commonjs(),
         typescript({

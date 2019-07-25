@@ -1,5 +1,5 @@
-import { IControllerInput } from './controller';
 import { IScene } from '../../../scenes/scene-interface';
+import { Input } from './input';
 
 export class Wsad {
     private wsad: {
@@ -15,22 +15,21 @@ export class Wsad {
         this.wsad = scene.input.keyboard.addKeys('W,S,A,D');
     }
 
-    public getInput(): IControllerInput {
-        let xAxis = 0;
+    public processInput(input: Input) {
         if (this.wsad.A.isDown) {
-            xAxis = -1;
+            input.turn = -1;
         } else if (this.wsad.D.isDown) {
-            xAxis = 1;
+            input.turn = 1;
+        } else {
+            input.turn = 0;
         }
-        let yAxis = 0;
+
+        input.accelerate = 0;
+        input.break = 0;
         if (this.wsad.W.isDown) {
-            yAxis = -1;
+            input.accelerate = 1;
         } else if (this.wsad.S.isDown) {
-            yAxis = 1;
+            input.break = 1;
         }
-        return {
-            xAxis,
-            yAxis,
-        };
     }
 }

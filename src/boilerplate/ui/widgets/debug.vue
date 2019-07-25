@@ -1,49 +1,64 @@
 <template id="widget-debug">
-    <div>
-        <div>mouse: {{ mouseX | int }} {{ mouseY | int }}</div>
-        <div>camera: {{ scene.cameras ? scene.cameras.main.scrollX : NaN }} {{ scene.cameras ? scene.cameras.main.scrollY : NaN }}</div>
-        <div>paused: <input type="checkbox" v-model="scene.paused" /> {{ scene.paused }}</div>
-        <div>debug: <input type="checkbox" v-model="scene.debugEnabled" /> {{ scene.debugEnabled }}</div>
-        <div>frame: {{ scene.frame }}</div>
-        <div>
-            timers:
-            <div v-for="(timer, name) in scene.timers" :key="name">{{ name }}: {{ timer.average.toFixed(6) }}</div>
-        </div>
+    <div class="card">
+        <div class="card-header">debug:</div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <div>mouse: {{ mouseX | int }} {{ mouseY | int }}</div>
+                <div v-if="scene">camera: {{ scene.cameras ? scene.cameras.main.scrollX : NaN }} {{ scene.cameras ? scene.cameras.main.scrollY : NaN }}</div>
+                <div v-if="scene">paused: <input type="checkbox" v-model="scene.paused" /> {{ scene.paused }}</div>
+                <div v-if="scene">debug: <input type="checkbox" v-model="scene.debugEnabled" /> {{ scene.debugEnabled }}</div>
+                <div v-if="scene">frame: {{ scene.frame }}</div>
+            </li>
+            <li class="list-group-item">
+                <div v-if="scene">
+                    timers:
+                    <div v-for="(timer, name) in scene.timers" :key="name">{{ name }}: {{ timer.average.toFixed(6) }}</div>
+                </div>
+            </li>
+        </ul>
     </div>
 </template>
 
-<script type="ts">
+<script lang="ts">
 import { logSettings } from '../../services/log';
-export default {
-    name: 'WidgetDebug',
-    data() {
-        return {
-            mouseX: null,
-            mouseY: null,
-            scene: {},
-            collision: false,
-        };
-    },
+import Vue from 'vue';
+import Component from 'vue-class-component';
+import { IScene } from '../../scenes/scene-interface';
+
+interface IWidgetDebugInit {
+    scene: IScene;
+}
+
+@Component({
     filters: {
-        int: (n) => {
+        int: (n: number) => {
             return Math.round(n);
         },
     },
-    watch: {
-        'scene.debugEnabled': function (value) {
-            this.scene.storage.set('debug', value);
-            logSettings.debug = value;
-            if (this.scene.debug) {
-                this.scene.debug.clear();
-            }
-        },
-    },
-    methods: {
-        updateMouse(mouseX, mouseY) {
-            this.mouseX = mouseX;
-            this.mouseY = mouseY;
-        },
-    },
+    // watch: {
+    //     'scene.debugEnabled': function (value) {
+    //         this.scene.storage.set('debug', value);
+    //         logSettings.debug = value;
+    //         if (this.scene.debug) {
+    //             this.scene.debug.clear();
+    //         }
+    //     },
+    // },
+})
+export default class WidgetDebug extends Vue {
+    public mouseX: number = 0;
+    public mouseY: number = 0;
+    public collision = false;
+    public scene: IScene | null = null;
+
+    public ready({ scene }: IWidgetDebugInit) {
+        this.scene = scene;
+    }
+
+    public updateMouse(mouseX: number, mouseY: number) {
+        this.mouseX = mouseX;
+        this.mouseY = mouseY;
+    }
 };
 </script>
 

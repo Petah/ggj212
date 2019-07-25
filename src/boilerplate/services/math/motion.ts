@@ -1,8 +1,6 @@
 import { lengthDirX, lengthDirY, pointDirection } from './vector';
 
 interface IMotionEntity {
-    x: number;
-    y: number;
     speed: number;
     direction: number;
 }

@@ -8,6 +8,7 @@ export interface IDebuggable {
 
 export class Debug {
     private graphics: Phaser.GameObjects.Graphics;
+    private gridGraphics: Phaser.GameObjects.Graphics;
     private samples: number = 0;
     private textPoolCount = 0;
     private textPool: Phaser.GameObjects.Text[] = [];
@@ -18,6 +19,8 @@ export class Debug {
         scene.step.debug.add(this.update.bind(this));
         this.graphics = scene.add.graphics();
         this.graphics.depth = Depth.DEBUG;
+        this.gridGraphics = scene.add.graphics();
+        this.gridGraphics.depth = Depth.DEBUG_GRID;
     }
 
     public update() {
@@ -26,17 +29,19 @@ export class Debug {
     }
 
     public drawGrid() {
+        this.gridGraphics.clear();
         const gridSize = 100;
         const camera = this.scene.cameras.main;
         const cameraX = Math.floor(camera.worldView.x / gridSize) * gridSize;
         const cameraY = Math.floor(camera.worldView.y / gridSize) * gridSize;
         const cameraWidth = camera.width + gridSize;
         const cameraHeight = camera.height + gridSize;
+        this.gridGraphics.lineStyle(1, 0xffffff, 0.4);
         for (let x = cameraX; x < cameraX + cameraWidth; x += gridSize) {
-            this.drawLine(x, cameraY, x, cameraY + cameraHeight, 0xffffff, 0.3, 1);
+            this.gridGraphics.strokeLineShape(new Phaser.Geom.Line(x, cameraY, x, cameraY + cameraHeight));
         }
         for (let y = cameraY; y < cameraY + cameraHeight; y += gridSize) {
-            this.drawLine(cameraX, y, cameraX + cameraWidth, y, 0xffffff, 0.3, 1);
+            this.gridGraphics.strokeLineShape(new Phaser.Geom.Line(cameraX, y, cameraX + cameraWidth, y));
         }
     }
 

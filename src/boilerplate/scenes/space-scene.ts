@@ -2,22 +2,21 @@ import { Ui } from '../ui/ui';
 import { Team } from '../objects/player/team';
 import { Debug } from '../objects/debug-draw';
 import { logDebug, logSettings } from '../services/log';
-import { LightStatic } from '../objects/lighting/light-static';
-import { SpawnPoint } from '../objects/spawn-point';
-import { Actor } from '../objects/actors/actor';
-import { Player } from '../objects/player/player';
 import { EventGroup } from './event-group';
 import { Wsad } from '../objects/player/controller/wsad';
-import { WidgetDebug } from '../ui/types/debug';
 import { LocalStorage } from '../services/local-storage';
 import { TimerAverage } from '../services/timer-average';
 import { IScene } from './scene-interface';
 import { Ship } from '../objects/actors/ship';
 import { PlayerShip } from '../objects/player/player-ship';
+import WidgetDebug from '../ui/widgets/debug.vue';
+import WidgetShip from '../ui/widgets/ship.vue';
+import { preloadCallbacks } from './preload';
 
 export class SpaceScene extends Phaser.Scene implements IScene {
     private ui: Ui;
     public uiDebug: WidgetDebug;
+    public uiShip: WidgetShip;
 
     public width!: number;
     public height!: number;
@@ -56,12 +55,18 @@ export class SpaceScene extends Phaser.Scene implements IScene {
         logSettings.debug = this.debugEnabled;
 
         this.ui = new Ui();
-        this.uiDebug = this.ui.rightSidebar.addWidget(new WidgetDebug(this));
+        this.uiDebug = this.ui.rightSidebar.addWidget(WidgetDebug, {
+            scene: this,
+        });
+        this.uiShip = this.ui.rightSidebar.addWidget(WidgetShip, {
+            scene: this,
+        });
     }
 
     public preload(): void {
-        this.load.image('lamp', './assets/lamp.png');
-        Ship.scenePreload(this);
+        for (const callback of preloadCallbacks) {
+            callback(this);
+        }
     }
 
     public create(): void {
@@ -80,8 +85,6 @@ export class SpaceScene extends Phaser.Scene implements IScene {
 
         this.width = 10000;
         this.height = 10000;
-
-        Ship.sceneCreate(this);
 
         this.loadObjects();
     }
@@ -105,5 +108,6 @@ export class SpaceScene extends Phaser.Scene implements IScene {
     private loadObjects() {
         const ship = new Ship(this, 100, 100);
         const player = new PlayerShip(this, ship, new Wsad(this));
+        this.uiShip.ship = ship;
     }
 }

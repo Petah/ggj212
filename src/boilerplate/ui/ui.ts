@@ -1,6 +1,5 @@
-import WidgetLight from './widgets/light.vue';
+import Vue from 'vue';
 import WidgetList from './widgets/list.vue';
-import WidgetDebug from './widgets/debug.vue';
 import { UiWidgetList } from './ui-widget-list';
 
 export class Ui {
@@ -8,14 +7,16 @@ export class Ui {
     public readonly rightSidebar: UiWidgetList;
 
     public constructor() {
+        Vue.filter('round', (n: number) => {
+            return Math.round(n);
+        });
+
         this.vue = new Vue({
             el: '#ui',
             components: {
-                WidgetLight,
                 WidgetList,
-                WidgetDebug,
             },
-        }) as Vue.VueConstructor;
+        });
         this.rightSidebar = new UiWidgetList(this.vue.$refs.rightSidebar);
     }
 }
