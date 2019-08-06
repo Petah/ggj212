@@ -7,7 +7,11 @@ export class Ui {
     public readonly rightSidebar: UiWidgetList;
 
     public constructor() {
-        Vue.filter('round', (n: number) => {
+        Vue.filter('round', (n: number, decimals: number = 0) => {
+            if (decimals > 0) {
+                const power = Math.pow(10, decimals);
+                return Math.round(n * power) / power;
+            }
             return Math.round(n);
         });
 

@@ -3,8 +3,8 @@
         <div class="card-header">ship:</div>
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
-                <div>x: {{ ship.x }}</div>
-                <div>y: {{ ship.y }}</div>
+                <div>x: {{ ship.x | round }}</div>
+                <div>y: {{ ship.y | round }}</div>
             </li>
             <li class="list-group-item">
                 <div>move:</div>

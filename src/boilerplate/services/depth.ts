@@ -3,6 +3,7 @@ export const Depth = {
     FOREGROUND: 100,
     SHADOW: 150,
     THRUST: 500,
-    SHIPS: 750,
+    BULLETS: 800,
+    SHIPS: 850,
     DEBUG: 1000,
 };

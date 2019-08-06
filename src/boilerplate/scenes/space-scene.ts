@@ -1,7 +1,7 @@
 import { Ui } from '../ui/ui';
 import { Team } from '../objects/player/team';
 import { Debug } from '../objects/debug-draw';
-import { logDebug, logSettings } from '../services/log';
+import { logDebug, logSettings, logSample } from '../services/log';
 import { EventGroup } from './event-group';
 import { Wsad } from '../objects/player/controller/wsad';
 import { LocalStorage } from '../services/local-storage';
@@ -12,6 +12,8 @@ import { PlayerShip } from '../objects/player/player-ship';
 import WidgetDebug from '../ui/widgets/debug.vue';
 import WidgetShip from '../ui/widgets/ship.vue';
 import { preloadCallbacks } from './preload';
+import { Astroid } from '../objects/actors/astroid';
+import { randomBetween } from '../services/math/random';
 
 export class SpaceScene extends Phaser.Scene implements IScene {
     private ui: Ui;
@@ -24,7 +26,11 @@ export class SpaceScene extends Phaser.Scene implements IScene {
     public debug!: Debug;
     public debugEnabled: boolean = false;
 
-    public frame = 0;
+    public updates = 0;
+    public updatesPerSecond = 0;
+    public lastUpdateSecond = 0;
+    public updatesLastSecond = 0;
+
     private timers = {
         update: new TimerAverage(),
         debug: new TimerAverage(),
@@ -81,12 +87,33 @@ export class SpaceScene extends Phaser.Scene implements IScene {
 
         this.cameras.main.setBackgroundColor('#66ff66');
 
+        this.input.on('wheel', (pointer, currentlyOver, dx, dy, dz, event) => {
+            const zoomSpeed = 1.1;
+            if (dy > 0) {
+                this.cameras.main.zoom /= zoomSpeed;
+            } else if (dy < 0) {
+                this.cameras.main.zoom *= zoomSpeed;
+            }
+            if (this.cameras.main.zoom > 1) {
+                this.cameras.main.zoom = 1;
+            }
+            console.log(this.cameras.main.zoom);
+        });
+
         this.debug = new Debug(this);
 
         this.width = 10000;
         this.height = 10000;
 
         this.loadObjects();
+
+        const timedEvent = this.time.addEvent({
+            delay: 1000,
+            callback: () => {
+                const astroid = new Astroid(this, randomBetween(-1000, 1000), randomBetween(-1000, 1000));
+            },
+            loop: true,
+        });
     }
 
     public update(time: number, delta: number): void {
@@ -94,11 +121,17 @@ export class SpaceScene extends Phaser.Scene implements IScene {
             return;
         }
 
-        this.frame++;
+        this.updates++;
+        this.updatesLastSecond++;
+        if (this.lastUpdateSecond < time) {
+            this.lastUpdateSecond = time + 1000;
+            this.updatesPerSecond = this.updatesLastSecond;
+            this.updatesLastSecond = 0;
+        }
         this.uiDebug.updateMouse(this.input.activePointer.worldX, this.input.activePointer.worldY);
 
         this.step.input.call();
-        this.step.update.call();
+        this.step.update.call(time, delta / 1000);
         this.step.collision.call();
         if (this.debugEnabled) {
             this.step.debug.call(this.debug);

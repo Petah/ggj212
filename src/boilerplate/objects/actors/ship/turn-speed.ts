@@ -27,8 +27,8 @@ export class TurnSpeed {
         this.friction = friction;
     }
 
-    public turn(percent: number) {
-        this.currentTurnSpeed += this.acceleration * percent;
+    public turn(delta: number, percent: number) {
+        this.currentTurnSpeed += this.acceleration * percent * delta;
         if (this.currentTurnSpeed > this.maxTurnSpeed) {
             this.currentTurnSpeed = this.maxTurnSpeed;
         } else if (this.currentTurnSpeed < -this.maxTurnSpeed) {
@@ -36,14 +36,14 @@ export class TurnSpeed {
         }
     }
 
-    public applyFriction(percent: number) {
+    public applyFriction(delta: number, percent: number) {
         if (this.currentTurnSpeed > 0) {
-            this.currentTurnSpeed -= this.friction * percent;
+            this.currentTurnSpeed -= this.friction * percent * delta;
             if (this.currentTurnSpeed < 0) {
                 this.currentTurnSpeed = 0;
             }
         } else {
-            this.currentTurnSpeed += this.friction * percent;
+            this.currentTurnSpeed += this.friction * percent * delta;
             if (this.currentTurnSpeed > 0) {
                 this.currentTurnSpeed = 0;
             }

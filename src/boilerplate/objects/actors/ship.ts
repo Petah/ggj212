@@ -6,9 +6,15 @@ import { MoveSpeed } from './ship/move-speed';
 import { Thruster } from './ship/thruster';
 import { preload } from '../../scenes/preload';
 import { Depth } from '../../services/depth';
+import { Bullet } from './bullet';
+import { Gun } from './ship/gun';
+import { StaggerGun } from './ship/stagger-gun';
+import { FatFlame } from './ship/thruster/fat-flame';
+import { Dots } from './ship/thruster/dots';
 
 preload((scene: IScene) => {
-    scene.load.image('front', './assets/ship/playerShip2_red.png');
+    scene.load.image('ship-red', './assets/ship/playerShip2_red.png');
+    scene.load.image('box', './assets/ship/box.png');
 });
 
 export class Ship {
@@ -17,20 +23,20 @@ export class Ship {
 
     public turnSpeed: TurnSpeed = new TurnSpeed({
         maxTurnSpeed: 3,
-        acceleration: 0.5,
-        friction: 0.1,
+        acceleration: 16,
+        friction: 8,
     });
     public moveSpeed: MoveSpeed = new MoveSpeed({
         max: 10,
-        acceleration: 1,
-        friction: 0.1,
+        acceleration: 20,
+        friction: 10,
         breakingFriction: 0.5,
     });
-    public speed: number = 0;
-    public direction: number = 0;
 
-    public input: Input = new Input();
+    public readonly input: Input = new Input();
     private thruster: Thruster;
+    private noseGun: Gun;
+    private wingGuns: StaggerGun;
 
     public constructor(
         private scene: IScene,
@@ -39,26 +45,31 @@ export class Ship {
     ) {
         // @todo need to remove events on destroy
         scene.step.update.add(this.update.bind(this));
-        this.baseSprite = this.scene.add.sprite(this.x, this.y, 'front');
+        this.baseSprite = this.scene.add.sprite(this.x, this.y, 'ship-red');
+        // this.baseSprite = this.scene.add.sprite(this.x, this.y, 'box');
+        this.baseSprite.setOrigin(0.5, 0.5);
         this.scene.cameras.main.startFollow(this.baseSprite, true, 0.5, 0.5);
         this.baseSprite.depth = Depth.SHIPS;
-        this.thruster = new Thruster(scene, 30, 30);
+        this.thruster = new Thruster(scene, 40, 0, Dots);
+        this.noseGun = new Gun(scene, 30, 0);
+        this.wingGuns = new StaggerGun(scene, [
+            { x: -15, y: 30 },
+            { x: -15, y: -30 },
+        ]);
     }
 
-    public update(time: number, delta: number) {
+    private update(time: number, delta: number) {
         if (this.input.turn) {
-            this.turnSpeed.turn(this.input.turn);
+            this.turnSpeed.turn(delta, this.input.turn);
         } else {
-            this.turnSpeed.applyFriction(1);
+            this.turnSpeed.applyFriction(delta, 1);
         }
         this.turnSpeed.update();
 
         if (this.input.accelerate > 0) {
-            this.moveSpeed.accelerate(this.input.accelerate, this.turnSpeed.direction);
-            this.thruster.start(this.x, this.y, this.turnSpeed.direction);
+            this.moveSpeed.accelerate(delta, this.input.accelerate, this.turnSpeed.direction);
         } else {
-            this.moveSpeed.applyFriction(this.input.break);
-            this.thruster.stop();
+            this.moveSpeed.applyFriction(delta, this.input.break);
         }
 
         this.x += lengthDirX(this.moveSpeed.speed, this.moveSpeed.direction);
@@ -67,5 +78,16 @@ export class Ship {
         this.baseSprite.x = this.x;
         this.baseSprite.y = this.y;
         this.baseSprite.angle = this.turnSpeed.direction;
+
+        if (this.input.accelerate > 0) {
+            this.thruster.start(this.x, this.y, this.turnSpeed.direction);
+        } else {
+            this.thruster.stop();
+        }
+
+        if (this.input.shoot) {
+            // this.noseGun.shoot(this.x, this.y, this.turnSpeed.direction);
+            this.wingGuns.shoot(this.x, this.y, this.turnSpeed.direction);
+        }
     }
 }

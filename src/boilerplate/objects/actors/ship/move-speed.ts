@@ -32,15 +32,15 @@ export class MoveSpeed {
         this.breakingFriction = breakingFriction;
     }
 
-    public accelerate(acceleratingPercent: number, direction: number) {
-        motionAdd(this, this.acceleration * acceleratingPercent, direction);
+    public accelerate(delta: number, acceleratingPercent: number, direction: number) {
+        motionAdd(this, this.acceleration * acceleratingPercent * delta, direction);
         if (this.speed > this.max) {
             this.speed = this.max;
         }
     }
 
-    public applyFriction(breakingPercent: number) {
-        this.speed -= this.friction + ((this.breakingFriction - this.friction) * breakingPercent);
+    public applyFriction(delta: number, breakingPercent: number) {
+        this.speed -= (this.friction + ((this.breakingFriction - this.friction) * breakingPercent)) * delta;
         if (this.speed < this.min) {
             this.speed = this.min;
         }

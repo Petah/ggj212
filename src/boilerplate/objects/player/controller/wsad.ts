@@ -12,7 +12,7 @@ export class Wsad {
     constructor(
         protected scene: IScene,
     ) {
-        this.wsad = scene.input.keyboard.addKeys('W,S,A,D');
+        this.wsad = scene.input.keyboard.addKeys('W,S,A,D,SPACE');
     }
 
     public processInput(input: Input) {
@@ -31,5 +31,7 @@ export class Wsad {
         } else if (this.wsad.S.isDown) {
             input.break = 1;
         }
+
+        input.shoot = this.wsad.SPACE.isDown;
     }
 }

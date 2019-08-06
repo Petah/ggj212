@@ -3,11 +3,13 @@
         <div class="card-header">debug:</div>
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
-                <div>mouse: {{ mouseX | int }} {{ mouseY | int }}</div>
-                <div v-if="scene">camera: {{ scene.cameras ? scene.cameras.main.scrollX : NaN }} {{ scene.cameras ? scene.cameras.main.scrollY : NaN }}</div>
+                <div>mouse: {{ mouseX | round }} {{ mouseY | round }}</div>
+                <div v-if="scene && scene.cameras">camera: {{ scene.cameras.main.scrollX | round }} {{ scene.cameras.main.scrollY | round }}</div>
+                <div v-if="scene && scene.cameras">zoom: {{ scene.cameras.main.zoom | round(4) }}</div>
                 <div v-if="scene">paused: <input type="checkbox" v-model="scene.paused" /> {{ scene.paused }}</div>
                 <div v-if="scene">debug: <input type="checkbox" v-model="scene.debugEnabled" /> {{ scene.debugEnabled }}</div>
-                <div v-if="scene">frame: {{ scene.frame }}</div>
+                <div v-if="scene">updaes: {{ scene.updates }}</div>
+                <div v-if="scene">ups: {{ scene.updatesPerSecond }}</div>
             </li>
             <li class="list-group-item">
                 <div v-if="scene">
@@ -30,11 +32,6 @@ interface IWidgetDebugInit {
 }
 
 @Component({
-    filters: {
-        int: (n: number) => {
-            return Math.round(n);
-        },
-    },
     // watch: {
     //     'scene.debugEnabled': function (value) {
     //         this.scene.storage.set('debug', value);

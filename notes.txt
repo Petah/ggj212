@@ -1,1 +1,13 @@
 May need to use this https://github.com/sporadic-labs/tile-extruder
+
+js13k
+Pictonary type game multiplayer
+look for top reddit posts for questiosn
+ricktionary
+
+
+ship has scanners that scan in an arc in from of the ship
+once they lock on the auto fire
+draw scaner arc in the ui with sweeping line and cross hairs
+
+
