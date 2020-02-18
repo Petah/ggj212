@@ -24,6 +24,7 @@ window.addEventListener('load', () => {
         parent: 'game',
         scene: SpaceScene,
         render: {
+            antialias: true,
         },
         input: {
             mouse: true,

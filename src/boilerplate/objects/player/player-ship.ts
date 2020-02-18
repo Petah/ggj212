@@ -2,20 +2,21 @@ import { IController } from './controller/controller';
 import { IScene } from '../../scenes/scene-interface';
 import { Ship } from '../actors/ship';
 import { Input } from './controller/input';
+import { Entity } from '../actors/entity';
 
-export class PlayerShip {
+export class PlayerShip extends Entity {
     private input: Input;
 
     constructor(
-        private scene: IScene,
+        scene: IScene,
         private ship: Ship,
         private controller: IController,
     ) {
-        scene.step.input.add(this.update.bind(this));
+        super(scene);
         this.input = this.ship.input;
     }
 
-    public update() {
+    public onInput() {
         this.controller.processInput(this.input);
     }
 }

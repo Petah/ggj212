@@ -7,6 +7,7 @@ export class Wsad {
         S: Phaser.Input.Keyboard.Key,
         A: Phaser.Input.Keyboard.Key,
         D: Phaser.Input.Keyboard.Key,
+        SPACE: Phaser.Input.Keyboard.Key,
     };
 
     constructor(
@@ -32,6 +33,6 @@ export class Wsad {
             input.break = 1;
         }
 
-        input.shoot = this.wsad.SPACE.isDown;
+        input.shoot = this.wsad.SPACE.isDown ? 1 : 0;
     }
 }

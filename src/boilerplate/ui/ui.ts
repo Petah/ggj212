@@ -15,6 +15,10 @@ export class Ui {
             return Math.round(n);
         });
 
+        Vue.filter('objectSize', (object: object) => {
+            return Object.values(object).length;
+        });
+
         this.vue = new Vue({
             el: '#ui',
             components: {

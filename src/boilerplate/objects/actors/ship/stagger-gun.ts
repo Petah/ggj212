@@ -1,6 +1,8 @@
 import { IScene } from '../../../scenes/scene-interface';
 import { Bullet } from '../bullet';
 import { lengthDirX, lengthDirY, pointDirection, pointDistance } from '../../../services/math/vector';
+import { Entity } from '../entity';
+import { Ship } from '../ship';
 
 interface IMountInput {
     x: number;
@@ -12,18 +14,18 @@ interface IMount {
     directionOffset: number;
 }
 
-export class StaggerGun {
+export class StaggerGun extends Entity {
     private mounts: IMount[] = [];
     private reloadTime: number = 0.1;
     private reloadingTimeLeft: number = 0;
     private currentMount: number = 0;
 
     constructor(
-        private scene: IScene,
+        scene: IScene,
+        private ship: Ship,
         private mountInputs: IMountInput[],
     ) {
-        // @todo need to remove events on destroy
-        scene.step.update.add(this.update.bind(this));
+        super(scene);
         this.mounts = mountInputs.map((mountInput) => {
             return {
                 directionOffset: pointDirection(0, 0, mountInput.x, mountInput.y),
@@ -32,7 +34,7 @@ export class StaggerGun {
         });
     }
 
-    private update(time: number, delta: number) {
+    public onUpdate(time: number, delta: number) {
         if (this.reloadingTimeLeft > 0) {
             this.reloadingTimeLeft -= delta;
         }
@@ -47,6 +49,7 @@ export class StaggerGun {
             this.scene,
             x + lengthDirX(this.mounts[this.currentMount].distanceOffset, direction + this.mounts[this.currentMount].directionOffset),
             y + lengthDirY(this.mounts[this.currentMount].distanceOffset, direction + this.mounts[this.currentMount].directionOffset),
+            this.ship,
             40,
             direction,
         );

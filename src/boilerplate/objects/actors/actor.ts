@@ -1,6 +1,5 @@
 import { MainScene } from '../../scenes/main-scene';
 import { lengthDirX, lengthDirY, pointDirection } from '../../services/math/vector';
-import { Entity } from '../entity';
 import { Light } from '../lighting/light';
 import { ICollidable } from '../collision/collision-map';
 import { ILightable } from '../lighting/light-map';
@@ -33,8 +32,6 @@ export class Actor implements ICollidable, ILightable {
         public x: number,
         public y: number,
     ) {
-        // @todo need to remove events on destroy
-        scene.step.update.add(this.update.bind(this));
         this.baseSprite = this.scene.add.sprite(this.x, this.y, 'front');
         this.frontSprite = this.loadSprite('front_strip2');
         this.backSprite = this.loadSprite('back_strip2');
@@ -93,7 +90,7 @@ export class Actor implements ICollidable, ILightable {
         });
     }
 
-    public update(time: number, delta: number) {
+    public onUpdate(time: number, delta: number) {
         if (this.speed > 0) {
             const spriteDirection = this.direction / 90;
             let sprite = null;

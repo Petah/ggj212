@@ -121,7 +121,7 @@ export class MainScene extends Phaser.Scene implements IScene {
         this.loadObjects();
     }
 
-    public update(time: number, delta: number): void {
+    public onUpdate(time: number, delta: number): void {
         if (this.paused) {
             return;
         }

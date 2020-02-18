@@ -1,25 +1,25 @@
 import { IScene } from '../../../scenes/scene-interface';
 import { Bullet } from '../bullet';
 import { lengthDirX, lengthDirY, pointDirection, pointDistance } from '../../../services/math/vector';
-import { logSample } from '../../../services/log';
+import { Entity } from '../entity';
 
-export class Gun {
+export class Gun extends Entity {
     private distanceOffset: number;
     private directionOffset: number;
     private reloadTime: number = 0.3;
     private reloadingTimeLeft: number = 0;
+
     constructor(
-        private scene: IScene,
+        scene: IScene,
         private xOffset: number,
         private yOffset: number,
     ) {
-        // @todo need to remove events on destroy
-        scene.step.update.add(this.update.bind(this));
+        super(scene);
         this.directionOffset = pointDirection(0, 0, xOffset, yOffset);
         this.distanceOffset = pointDistance(0, 0, xOffset, yOffset);
     }
 
-    private update(time: number, delta: number) {
+    public onUpdate(time: number, delta: number) {
         if (this.reloadingTimeLeft > 0) {
             this.reloadingTimeLeft -= delta;
         }

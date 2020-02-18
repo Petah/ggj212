@@ -1,12 +1,13 @@
 import { logDebug } from '../services/log';
 import { Depth } from '../services/depth';
 import { IScene } from '../scenes/scene-interface';
+import { Entity } from './actors/entity';
 
 export interface IDebuggable {
     debug(debug: Debug): void;
 }
 
-export class Debug {
+export class Debug extends Entity {
     private graphics: Phaser.GameObjects.Graphics;
     private gridGraphics: Phaser.GameObjects.Graphics;
     private samples: number = 0;
@@ -14,40 +15,62 @@ export class Debug {
     private textPool: Phaser.GameObjects.Text[] = [];
 
     constructor(
-        private scene: IScene,
+        scene: IScene,
     ) {
-        scene.step.debug.add(this.update.bind(this));
+        super(scene);
         this.graphics = scene.add.graphics();
         this.graphics.depth = Depth.DEBUG;
         this.gridGraphics = scene.add.graphics();
         this.gridGraphics.depth = Depth.DEBUG_GRID;
     }
 
-    public update() {
+    public onDebug() {
         this.clear();
         this.drawGrid();
     }
 
     public drawGrid() {
         this.gridGraphics.clear();
-        const gridSize = 100;
+        const gridSize = 2000;
         const camera = this.scene.cameras.main;
         const cameraX = Math.floor(camera.worldView.x / gridSize) * gridSize;
         const cameraY = Math.floor(camera.worldView.y / gridSize) * gridSize;
-        const cameraWidth = camera.width + gridSize;
-        const cameraHeight = camera.height + gridSize;
-        this.gridGraphics.lineStyle(1, 0xffffff, 0.4);
+        const cameraWidth = camera.displayWidth + gridSize;
+        const cameraHeight = camera.worldView.height + gridSize;
         for (let x = cameraX; x < cameraX + cameraWidth; x += gridSize) {
+            if (x === 0) {
+                this.gridGraphics.lineStyle(2, 0xff0000, 0.9);
+            } else {
+                this.gridGraphics.lineStyle(1, 0xffffff, 0.4);
+            }
             this.gridGraphics.strokeLineShape(new Phaser.Geom.Line(x, cameraY, x, cameraY + cameraHeight));
         }
         for (let y = cameraY; y < cameraY + cameraHeight; y += gridSize) {
+            if (y === 0) {
+                this.gridGraphics.lineStyle(2, 0xff0000, 0.9);
+            } else {
+                this.gridGraphics.lineStyle(1, 0xffffff, 0.4);
+            }
             this.gridGraphics.strokeLineShape(new Phaser.Geom.Line(cameraX, y, cameraX + cameraWidth, y));
         }
     }
 
+    private isInView(x: number, y: number) {
+        if (x < this.scene.cameras.main.worldView.x ||
+            y < this.scene.cameras.main.worldView.y ||
+            x > this.scene.cameras.main.worldView.x + this.scene.cameras.main.worldView.width ||
+            y > this.scene.cameras.main.worldView.y + this.scene.cameras.main.worldView.height) {
+            return false;
+        }
+        return true;
+    }
+
     public drawCircle(x: number, y: number, radius: number, color: number = 0xff0000, alpha = 0.8, width = 3) {
-        this.graphics.lineStyle(width, color, alpha);
-        this.graphics.strokeCircle(x, y, radius);
+        // if (!this.isInView(x, y)) {
+        //     return;
+        // }
+        // this.graphics.lineStyle(width, color, alpha);
+        // this.graphics.strokeCircle(x, y, radius);
     }
 
     public drawPolygon(points: Array<{ x: number, y: number }>, color: number = 0xff0000, alpha = 0.8, width = 3) {
@@ -61,10 +84,7 @@ export class Debug {
     }
 
     public drawText(x: number, y: number, text: string) {
-        if (x < this.scene.cameras.main.scrollX ||
-            y < this.scene.cameras.main.scrollY ||
-            x > this.scene.cameras.main.scrollX + this.scene.cameras.main.width ||
-            y > this.scene.cameras.main.scrollY + this.scene.cameras.main.height) {
+        if (!this.isInView(x, y)) {
             return;
         }
 

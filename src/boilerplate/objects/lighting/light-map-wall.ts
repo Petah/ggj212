@@ -47,7 +47,7 @@ export class LightMapWall implements IDebuggable {
         }
     }
 
-    public update(time: number, delta: number) {
+    public onUpdate(time: number, delta: number) {
         for (const { x, y, tile } of this.getVisibleTiles()) {
             tile.alpha = 1;
         }

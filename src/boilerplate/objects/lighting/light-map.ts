@@ -152,7 +152,7 @@ export class LightMap implements IDebuggable {
         return matrix;
     }
 
-    public update(time: number, delta: number) {
+    public onUpdate(time: number, delta: number) {
         // let matrix = this.updateLightMap(this.lights, 90);
         // for (let y = 0; y < this.height; y++) {
         //     for (let x = 0; x < this.width; x++) {

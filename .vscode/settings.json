@@ -7,10 +7,12 @@
         "Tilemaps",
         "Tileset",
         "anims",
+        "callables",
         "collidable",
         "collidables",
         "debugable",
         "debugables",
         "wsad"
-    ]
+    ],
+    "svg.minify.inlineStyles": false
 }
