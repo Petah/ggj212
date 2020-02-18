@@ -70,13 +70,26 @@ function clean() {
     ]);
 }
 
+function renderSvgs(done: (error: string) => void) {
+    exec('php bin/render-svgs.php', (error: string, stdout: string, stderr: string) => {
+        if (stderr) {
+            console.error(stderr);
+        }
+        if (stdout) {
+            console.log(stdout);
+        }
+        done(error);
+    });
+}
+
 function watchBuild() {
     return watch(['src/**/*.*'], build);
 }
 
-const build = series(parallel(copyHtml, copyCss, copyAssets, rollup), versionHtml);
+const build = series(parallel(copyHtml, copyCss, renderSvgs, copyAssets, rollup), versionHtml);
 
 exports.clean = clean;
 exports.build = build;
 exports.watch = series(build, watchBuild);
 exports.default = build;
+exports.renderSvgs = renderSvgs;

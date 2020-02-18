@@ -5,6 +5,8 @@ import { IScene } from '../../scenes/scene-interface';
 import { Entity } from '../actors/entity';
 
 export class Player extends Entity {
+    private selectedUnits: Entity[] = [];
+
     constructor(
         scene: IScene,
         private actor: Actor,

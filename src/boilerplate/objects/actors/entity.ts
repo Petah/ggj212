@@ -1,10 +1,14 @@
 import { IScene } from '../../scenes/scene-interface';
 import { Collidable } from './collidable';
 import { Debug } from '../debug-draw';
+import { ICommand } from './commands/command';
 
 export abstract class Entity {
     public id: number;
     public gameObjects: Phaser.GameObjects.GameObject[] = [];
+    public commands: ICommand[] = [];
+    public direction: number = 0;
+    public speed: number = 0;
 
     public constructor(
         protected scene: IScene,

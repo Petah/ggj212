@@ -66,11 +66,11 @@ export class Debug extends Entity {
     }
 
     public drawCircle(x: number, y: number, radius: number, color: number = 0xff0000, alpha = 0.8, width = 3) {
-        // if (!this.isInView(x, y)) {
-        //     return;
-        // }
-        // this.graphics.lineStyle(width, color, alpha);
-        // this.graphics.strokeCircle(x, y, radius);
+        if (!this.isInView(x, y)) {
+            return;
+        }
+        this.graphics.lineStyle(width, color, alpha);
+        this.graphics.strokeCircle(x, y, radius);
     }
 
     public drawPolygon(points: Array<{ x: number, y: number }>, color: number = 0xff0000, alpha = 0.8, width = 3) {

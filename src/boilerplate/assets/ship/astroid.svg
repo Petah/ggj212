@@ -13,16 +13,33 @@
         <style>
             path {
                 stroke: brown;
-                stroke-width: 4;
+                stroke-width: 2;
                 fill-opacity: 0;
                 filter: url(#glow);
             }
         </style>
     </defs>
-    <!-- <rect x="-250" y="-250" width="500" height="500" /> -->
+    <rect class="debug" x="-250" y="-250" width="500" height="500" fill="black" stroke="red" />
     <path
         d="
-            M40 50 L46 36 L34 24 L30 12 L16 16 L8 24 L6 40 L20 52 Z
+            M40 50
+            L46 36
+            L34 24
+            L30 12
+            L16 16
+            L8 24
+            L6 40
+            L20 52
+            Z
         "
     />
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const debug = urlParams.get('debug');
+        if (debug === 'false') {
+            for (const e of document.querySelectorAll('.debug')) {
+                e.parentNode.removeChild(e);
+            }
+        }
+    </script>
 </svg>

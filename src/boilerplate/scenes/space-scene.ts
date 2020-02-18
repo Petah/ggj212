@@ -3,7 +3,6 @@ import { Team } from '../objects/player/team';
 import { Debug } from '../objects/debug-draw';
 import { logDebug, logSettings, logSample } from '../services/log';
 import { EventGroup } from './event-group';
-import { Wsad } from '../objects/player/controller/wsad';
 import { LocalStorage } from '../services/local-storage';
 import { TimerAverage } from '../services/timer-average';
 import { IScene } from './scene-interface';
@@ -16,6 +15,7 @@ import { Astroid } from '../objects/actors/astroid';
 import { randomBetween } from '../services/math/random';
 import { Entity } from '../objects/actors/entity';
 import { Collidable } from '../objects/actors/collidable';
+import { KeyboardMouse } from '../objects/player/controller/keyboard-mouse';
 
 interface StepInterface {
     onCollision: EventGroup<() => void>;
@@ -204,7 +204,7 @@ export class SpaceScene extends Phaser.Scene implements IScene {
 
     private loadObjects() {
         const ship = new Ship(this, 100, 100);
-        const player = new PlayerShip(this, ship, new Wsad(this));
+        const player = new PlayerShip(this, ship, new KeyboardMouse(this));
         this.uiShip.ship = ship;
     }
 

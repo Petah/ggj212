@@ -13,6 +13,7 @@ import { FatFlame } from './ship/thruster/fat-flame';
 import { Dots } from './ship/thruster/dots';
 import { Entity } from './entity';
 import { Collidable } from './collidable';
+import { Debug } from '../debug-draw';
 
 preload((scene: IScene) => {
     scene.load.image('ship-red', './assets/ship/triangle.png');
@@ -25,14 +26,14 @@ export class Ship extends Collidable {
     public collisionRadius = 30;
 
     public turnSpeed: TurnSpeed = new TurnSpeed({
-        maxTurnSpeed: 3,
-        acceleration: 16,
+        maxTurnSpeed: 2,
+        acceleration: 8,
         friction: 8,
     });
     public moveSpeed: MoveSpeed = new MoveSpeed({
-        max: 10,
-        acceleration: 60,
-        friction: 5,
+        max: 5,
+        acceleration: 20,
+        friction: 8,
         breakingFriction: 25,
     });
 
@@ -50,7 +51,7 @@ export class Ship extends Collidable {
         this.baseSprite = this.addSprite(this.x, this.y, 'ship-red', Depth.SHIPS);
         // this.baseSprite = this.addSprite(this.x, this.y, 'box');
         this.scene.cameras.main.startFollow(this.baseSprite, true, 0.5, 0.5);
-        this.thruster = new Thruster(scene, 40, 0, Dots);
+        this.thruster = new Thruster(scene, 10, 0, Dots);
         // this.noseGun = new Gun(scene, this, 30, 0);
         this.wingGuns = new StaggerGun(scene, this, [
             { x: -15, y: 30 },
@@ -74,6 +75,8 @@ export class Ship extends Collidable {
 
         this.x += lengthDirX(this.moveSpeed.speed, this.moveSpeed.direction);
         this.y += lengthDirY(this.moveSpeed.speed, this.moveSpeed.direction);
+        this.direction = this.turnSpeed.direction;
+        this.speed = this.moveSpeed.speed;
 
         if (this.input.accelerate > 0) {
             this.thruster.start(this.x, this.y, this.turnSpeed.direction);
@@ -90,7 +93,14 @@ export class Ship extends Collidable {
     public onDraw() {
         this.baseSprite.x = this.x;
         this.baseSprite.y = this.y;
-        this.baseSprite.angle = this.turnSpeed.direction;
+        this.baseSprite.angle = this.direction;
+    }
+
+    public onDebug(debug: Debug) {
+        super.onDebug(debug);
+        for (const command of this.input.commands) {
+            command.onDebug(debug);
+        }
     }
 
     public onCollide(entity: Collidable): boolean {

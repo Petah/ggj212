@@ -17,6 +17,6 @@ export class PlayerShip extends Entity {
     }
 
     public onInput() {
-        this.controller.processInput(this.input);
+        this.controller.processInput(this.input, this.ship);
     }
 }
